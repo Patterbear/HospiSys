@@ -2,6 +2,9 @@ package src;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+
+import static java.util.Collections.addAll;
 
 // Main class
 public class HospiSys {
@@ -119,6 +122,33 @@ public class HospiSys {
 
     private static void addNew(String category) {
         System.out.println(category);
+        playfairEncrypt("Benjamin");
+    }
+
+    private static String playfairEncrypt(String s) {
+        char[] key = s.substring(0, 4).toUpperCase().replace("J", "I").toCharArray();
+
+        String letters = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
+
+        for (int i = 0; i < key.length; i++) {
+            letters = letters.replace(Character.toString(key[i]), "");
+        }
+
+        char[] lettersArray = (new String(key) + letters).toCharArray();
+        System.out.println(lettersArray);
+
+        char[][] letters2DArray = new char[5][5];
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                letters2DArray[i][j] = lettersArray[(i * 5) + j];
+            }
+        }
+
+        System.out.println(Arrays.deepToString(letters2DArray));
+
+
+        return key.toString();
     }
 
 
