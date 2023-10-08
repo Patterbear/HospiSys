@@ -117,7 +117,7 @@ public class HospiSys {
 
     private static void addNew(String category) {
         playfairEncrypt("Benjamin says hellos", "William");
-        }
+    }
 
 
     // Remove char array duplicates function
@@ -130,9 +130,9 @@ public class HospiSys {
                 result += charArray[i];
             }
         }
-
         return result.toCharArray();
     }
+
 
     // Generate letters grid function
     private static char[][] generateGrid(char[] key) {
@@ -183,6 +183,7 @@ public class HospiSys {
 
 
     // Playfair string formatting function
+    // inserts spaces between character pairs
     private static String playfairFormatString(String s) {
         if(s.length() % 2 != 0) {s+=" ";};
         String output = "";
@@ -194,26 +195,16 @@ public class HospiSys {
         }
 
         return output.substring(0, output.length() - 1);
-
     }
 
 
-    // Playfair encryption method
-    // returns cipher text created from given message and key
-    private static String playfairEncrypt(String s, String k) {
+    // Playfair message formatting function
+    private static char[] playfairFormatMessage(String message) {
+        char[] messageChars = message.toUpperCase().replace(" ", "").replace("J", "I").toCharArray();
 
-        // format key
-        char[] key = k.toUpperCase().replace("J", "I").toCharArray();
-
-        // format message
-        String message = s.toUpperCase().replace(" ", "").replace("J", "I").toUpperCase();
-        System.out.println(message);
-
-        // handle duplicates
-        char[] messageChars = message.toCharArray();
         String messageNoDuplicates = Character.toString(messageChars[0]);
 
-        for(int i = 1; i < message.length(); i++) {
+        for(int i = 1; i < messageChars.length; i++) {
             if ((i + 1) % 2 == 0 && messageChars[i] == messageChars[i - 1]) {
                 messageNoDuplicates += "X";
             }
@@ -226,11 +217,22 @@ public class HospiSys {
             messageNoDuplicates += "Z";
         }
 
-        System.out.println(playfairFormatString(messageNoDuplicates));
+        return messageNoDuplicates.toCharArray();
+
+    }
+
+
+    // Playfair encryption method
+    // returns cipher text created from given message and key
+    private static String playfairEncrypt(String message, String key) {
+
+        // format key
+        char[] keyChars = key.toUpperCase().replace("J", "I").toCharArray();
 
         // generate grid and update message char array
-        char[][] lettersGrid = generateGrid(key);
-        messageChars = messageNoDuplicates.toCharArray();
+        char[][] lettersGrid = generateGrid(keyChars);
+        //messageChars = messageNoDuplicates.toCharArray();
+        char[] messageChars = playfairFormatMessage(message);
 
         // apply playfair rules
         String result = "";
@@ -274,11 +276,10 @@ public class HospiSys {
             }
         }
 
+        System.out.println(message);
+        System.out.println(result);
 
-        printGrid(lettersGrid);
-        System.out.println(playfairFormatString(result));
-
-        return key.toString();
+        return result;
     }
 
 
