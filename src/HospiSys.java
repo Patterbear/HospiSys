@@ -117,7 +117,7 @@ public class HospiSys {
 
     private static void addNew(String category) {
         playfairEncrypt("Benjamin says hellos", "William");
-    }
+        }
 
 
     // Remove char array duplicates function
@@ -267,9 +267,10 @@ public class HospiSys {
                 } else {
                     result += lettersGrid[second[0] + 1][second[1]];
                 }
-            } else { // incomplete
-                result += messageChars[i - 1];
-                result += messageChars[i];
+            } else {
+                // form rectangle and swap the letters with the ones on the end
+                result += lettersGrid[first[0]][second[1]];
+                result += lettersGrid[second[0]][first[1]];
             }
         }
 
