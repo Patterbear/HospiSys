@@ -1,7 +1,11 @@
 package src;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 
@@ -54,6 +58,7 @@ public class HospiSys {
     private static void login(String user, String password, JFrame frame) {
         System.out.println(user + password);
         frame.dispose();
+        if(!user.equals("") && !password.equals("")) {playfairEncrypt(user, password);}
         menu(user);
     }
 
@@ -74,13 +79,25 @@ public class HospiSys {
 
         // buttons
         JButton patientSearch = new JButton("Search");
-        patientSearch.addActionListener(e -> search("Patient"));
+        patientSearch.addActionListener(e -> {
+            try {
+                search("Patient");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         JButton addNewPatient = new JButton("Add New");
         addNewPatient.addActionListener(e -> addNew("Patient"));
 
         JButton staffSearch = new JButton("Search");
-        staffSearch.addActionListener(e -> search("Staff"));
+        staffSearch.addActionListener(e -> {
+            try {
+                search("Staff");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         JButton addNewStaff = new JButton("Add New");
         addNewStaff.addActionListener(e -> addNew("Staff"));
@@ -111,13 +128,122 @@ public class HospiSys {
 
     }
 
-    private static void search(String category) {
-        System.out.println(category);
+    private static void search(String category) throws IOException {
+        patientProfile(0);
     }
 
     private static void addNew(String category) {
         playfairEncrypt("Benjamin says hellos", "William");
     }
+
+    // Patient profile screen
+    private static void patientProfile(int id) throws IOException {
+
+        // Temporary example details
+        String[] exampleDetails = {
+                "Example",
+                "Patient",
+                "000-000-0000",
+                "1 Example Road, Exampleton, AA11 1AA, Exampleshire",
+                "Dr. Example Doctor, Example Medical Centre",
+                "01234567890",
+                "example@example.co.uk",
+                "Example General Hospital",
+                "Example Disease, Examplitis",
+                "Examplarin, Exampleine, Exampladol",
+                "Patient has severe allergy to examplacetemol. Has type 6 examplabetes."
+        };
+
+
+        JFrame frame = new JFrame("HospiSys - " + exampleDetails[0] + " " + exampleDetails[1]);
+        frame.getContentPane().setLayout(new GridBagLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(700, 300);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        String[] labels = {
+                "Forename",
+                "Surname",
+                "NHS Number",
+                "Address",
+                "GP",
+                "Telephone",
+                "Email",
+                "Location",
+                "Conditions",
+                "Medication",
+                "Notes"
+        };
+
+        // Profile picture
+        JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/example.png"))));
+        profilePhoto.setBorder(new EmptyBorder(20,0,0,0));
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 3;
+        frame.getContentPane().add(profilePhoto, gbc);
+
+        // Patient details
+        JPanel patientDetailsPanel = new JPanel(new GridLayout(labels.length, 0));
+        patientDetailsPanel.setBorder(new EmptyBorder(10,0,0,0));
+
+        for (int i = 0; i < labels.length; i++) {
+            patientDetailsPanel.add(new JLabel("    " + labels[i] + ": " + exampleDetails[i]));
+        }
+
+        gbc.gridx = 1;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 2;
+        frame.getContentPane().add(patientDetailsPanel, gbc);
+
+        // Edit and Delete Buttons
+        JPanel buttonsPanel = new JPanel();
+
+        JButton editButton = new JButton("Edit");
+        JButton deleteButton = new JButton("Delete");
+
+
+        buttonsPanel.add(editButton);
+        buttonsPanel.add(deleteButton);
+
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        gbc.gridheight = 1;
+
+        frame.getContentPane().add(buttonsPanel, gbc);
+
+        // Done button
+        JButton doneButton = new JButton("Done");
+
+        gbc.gridy = 4;
+
+        frame.getContentPane().add(doneButton, gbc);
+
+
+        frame.setVisible(true);
+    }
+
+    private static void staffProfile(int id) {
+        JFrame frame = new JFrame("HospiSys - Example Patient");
+        frame.getContentPane().setLayout(new GridLayout(0, 1));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 500);
+        String[] exampleDetails = {
+                "Example",
+                "Staff",
+                "Example Role",
+                "Example Hospital",
+                "Example Ward",
+                "example@nhs.uk"
+        };
+
+        frame.setVisible(true);
+    }
+
 
 
     // Remove char array duplicates function
@@ -231,7 +357,6 @@ public class HospiSys {
 
         // generate grid and update message char array
         char[][] lettersGrid = generateGrid(keyChars);
-        //messageChars = messageNoDuplicates.toCharArray();
         char[] messageChars = playfairFormatMessage(message);
 
         // apply playfair rules
@@ -277,6 +402,7 @@ public class HospiSys {
         }
 
         System.out.println(message);
+        printGrid(lettersGrid);
         System.out.println(result);
 
         return result;
