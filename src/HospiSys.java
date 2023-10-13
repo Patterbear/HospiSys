@@ -14,13 +14,19 @@ public class HospiSys {
 
     // 'Start' method
     // creates the initial login screen
-    private static void start() {
+    private static void start() throws IOException {
 
         // login window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Login");
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
+        frame.setResizable(false);
+        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+
+        // logo
+        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+
 
         // frame panels
         JPanel usernamePanel = new JPanel();
@@ -40,12 +46,19 @@ public class HospiSys {
 
         // login button
         JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(e -> login(usernameEntry.getText(), passwordEntry.getText(), frame));
+        loginButton.addActionListener(e -> {
+            try {
+                login(usernameEntry.getText(), passwordEntry.getText(), frame);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         loginButtonPanel.add(loginButton);
 
 
         // add panels to frame
+        frame.getContentPane().add(logo);
         frame.getContentPane().add(usernamePanel);
         frame.getContentPane().add(passwordPanel);
         frame.getContentPane().add(loginButtonPanel);
@@ -55,7 +68,7 @@ public class HospiSys {
 
     // login function
     // verifies login details and opens menu
-    private static void login(String user, String password, JFrame frame) {
+    private static void login(String user, String password, JFrame frame) throws IOException {
         System.out.println(user + password);
         frame.dispose();
         if(!user.equals("") && !password.equals("")) {playfairEncrypt(user, password);}
@@ -64,13 +77,19 @@ public class HospiSys {
 
     // Menu function
     // will open menu screen
-    private static void menu(String user) {
+    private static void menu(String user) throws IOException {
 
         // menu window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Menu");
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
+        frame.setResizable(false);
+        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+
+        // logo
+        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+
 
         // frame panels
         JPanel patientPanel = new JPanel();
@@ -105,7 +124,11 @@ public class HospiSys {
         JButton logout = new JButton("Log Out");
         logout.addActionListener(e -> {
             frame.dispose();
-            start();
+            try {
+                start();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         // add components to panels
@@ -120,6 +143,7 @@ public class HospiSys {
         logoutButtonPanel.add(logout);
 
         // add panels to frame
+        frame.getContentPane().add(logo);
         frame.getContentPane().add(patientPanel);
         frame.getContentPane().add(staffPanel);
         frame.getContentPane().add(logoutButtonPanel);
@@ -159,6 +183,7 @@ public class HospiSys {
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(700, 300);
+        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -410,7 +435,7 @@ public class HospiSys {
 
 
     // Main method
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("HospiSys is running...");
 
         start();
