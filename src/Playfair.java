@@ -160,11 +160,61 @@ public class Playfair {
                 result += lettersGrid[second[0]][first[1]];
             }
         }
+        return result;
+    }
 
-        System.out.println(message);
-        printGrid(lettersGrid);
-        System.out.println(result);
 
+    // Playfair decrypt method
+    // decrypts cipher text using given key
+    public static String decrypt(String message, String key) {
+
+        // format key
+        char[] keyChars = key.toUpperCase().replace("J", "I").toCharArray();
+
+        // generate grid
+        char[][] lettersGrid = generateGrid(keyChars);
+        char[] messageChars = message.toCharArray();
+
+        String result = "";
+
+        for (int i = 1; i < messageChars.length; i+=2) {
+            int[] first = searchGrid(lettersGrid, messageChars[i - 1]);
+            int[] second = searchGrid(lettersGrid, messageChars[i]);
+
+            // same row, shift left
+            if (first[0] == second[0]) {
+                if (first[1] == 0) {
+                    result += lettersGrid[first[0]][4]; // wraps around
+                } else {
+                    result += lettersGrid[first[0]][first[1] - 1];
+                }
+
+                if (second[1] == 0) {
+                    result += lettersGrid[second[0]][4]; // wraps around
+                } else {
+                    result += lettersGrid[second[0]][second[1] - 1];
+                }
+            }
+
+            // same column,shift up
+            else if(first[1] == second[1]) {
+                if (first[0] == 0) {
+                    result += lettersGrid[4][first[1]]; // wraps around
+                } else {
+                    result += lettersGrid[first[0] - 1][first[1]];
+                }
+
+                if (second[0] == 0) {
+                    result += lettersGrid[4][second[1]]; // wraps around
+                } else {
+                    result += lettersGrid[second[0] - 1][second[1]];
+                }
+            } else {
+                // form rectangle and swap the letters with the ones on the end
+                result += lettersGrid[first[0]][second[1]];
+                result += lettersGrid[second[0]][first[1]];
+            }
+        }
         return result;
     }
 }

@@ -67,9 +67,12 @@ public class HospiSys {
     // login function
     // verifies login details and opens menu
     private static void login(String user, String password, JFrame frame) throws IOException {
-        System.out.println(user + password);
         frame.dispose();
-        if(!user.equals("") && !password.equals("")) {Playfair.encrypt(user, password);}
+        if(!user.equals("") && !password.equals("")) {
+            String msg = Playfair.encrypt(user, password);
+            System.out.println(Playfair.decrypt(msg, password));
+
+        }
         menu(user);
     }
 
@@ -176,7 +179,6 @@ public class HospiSys {
                 "Patient has severe allergy to examplacetemol. Has type 6 examplabetes."
         };
 
-        Playfair.encrypt("patient details must be encrypted", "benji");
 
         JFrame frame = new JFrame("HospiSys - " + exampleDetails[0] + " " + exampleDetails[1]);
         frame.getContentPane().setLayout(new GridBagLayout());
