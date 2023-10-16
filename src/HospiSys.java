@@ -34,6 +34,7 @@ public class HospiSys {
         // labels and entry  boxes
         TextField usernameEntry = new TextField(10);
         TextField passwordEntry = new TextField(10);
+        passwordEntry.setEchoChar('*');
 
         usernamePanel.add(new JLabel("Username:"));
         usernamePanel.add(usernameEntry);
@@ -176,7 +177,7 @@ public class HospiSys {
                 "Example General Hospital",
                 "Example Disease, Examplitis",
                 "Examplarin, Exampleine, Exampladol",
-                "Patient has severe allergy to examplacetemol. Has type 6 examplabetes."
+                "Patient has severe allergy to examplacetemol. Has type six examplabetes."
         };
 
 
