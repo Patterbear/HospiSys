@@ -6,6 +6,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 // Main class
 public class HospiSys {
@@ -277,6 +278,11 @@ public class HospiSys {
     // Main method
     public static void main(String[] args) throws IOException {
         System.out.println("HospiSys is running...");
+
+        HospiSysData hsd = new HospiSysData("dat/patients.hsd");
+        System.out.println(hsd.readAll());
+
+        System.out.println(Arrays.toString(hsd.get(0)));
 
         start();
     }
