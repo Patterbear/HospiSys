@@ -6,7 +6,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 // Main class
 public class HospiSys {
@@ -157,6 +156,7 @@ public class HospiSys {
 
     private static void search(String category) throws IOException {
         patientProfile(0);
+        patientProfile(1);
     }
 
     private static void addNew(String category) {
@@ -166,31 +166,21 @@ public class HospiSys {
     // Patient profile screen
     private static void patientProfile(int id) throws IOException {
 
-        // Temporary example details
-        String[] exampleDetails = {
-                "Example",
-                "Patient",
-                "000-000-0000",
-                "1 Example Road, Exampleton, AA11 1AA, Exampleshire",
-                "Dr. Example Doctor, Example Medical Centre",
-                "01234567890",
-                "example@example.co.uk",
-                "Example General Hospital",
-                "Example Disease, Examplitis",
-                "Examplarin, Exampleine, Exampladol",
-                "Patient has severe allergy to examplacetemol. Has type six examplabetes."
-        };
+        // Load patient details
+        HospiSysData hsd = new HospiSysData("dat/patients.hsd");
+        String[] patientDetails = hsd.get(id);
 
 
-        JFrame frame = new JFrame("HospiSys - " + exampleDetails[0] + " " + exampleDetails[1]);
+        JFrame frame = new JFrame("HospiSys - " + patientDetails[1] + " " + patientDetails[2]);
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(700, 300);
+        frame.setSize(700, 350);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
 
         GridBagConstraints gbc = new GridBagConstraints();
 
         String[] labels = {
+                "ID",
                 "Forename",
                 "Surname",
                 "NHS Number",
@@ -205,7 +195,7 @@ public class HospiSys {
         };
 
         // Profile picture
-        JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/example.png"))));
+        JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/" + patientDetails[0] +".png")).getScaledInstance(150, 150, Image.SCALE_FAST)));
         profilePhoto.setBorder(new EmptyBorder(20,0,0,0));
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
@@ -218,7 +208,7 @@ public class HospiSys {
         patientDetailsPanel.setBorder(new EmptyBorder(10,0,0,0));
 
         for (int i = 0; i < labels.length; i++) {
-            patientDetailsPanel.add(new JLabel("    " + labels[i] + ": " + exampleDetails[i]));
+            patientDetailsPanel.add(new JLabel("    " + labels[i] + ": " + patientDetails[i]));
         }
 
         gbc.gridx = 1;
@@ -278,11 +268,6 @@ public class HospiSys {
     // Main method
     public static void main(String[] args) throws IOException {
         System.out.println("HospiSys is running...");
-
-        HospiSysData hsd = new HospiSysData("dat/patients.hsd");
-        System.out.println(hsd.readAll());
-
-        System.out.println(Arrays.toString(hsd.get(0)));
 
         start();
     }

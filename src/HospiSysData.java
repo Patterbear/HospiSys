@@ -8,7 +8,7 @@ public class HospiSysData {
 
     private final File file;
 
-    HospiSysData(String path) throws FileNotFoundException {
+    HospiSysData(String path) {
         this.file = new File(path);
     }
 
