@@ -6,6 +6,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 // Main class
 public class HospiSys {
@@ -170,8 +171,9 @@ public class HospiSys {
         HospiSysData hsd = new HospiSysData("dat/patients.hsd");
         String[] patientDetails = hsd.get(id);
 
+        System.out.println(Arrays.toString(HospiSysData.encryptRecord(patientDetails)));
 
-        JFrame frame = new JFrame("HospiSys - " + patientDetails[1] + " " + patientDetails[2]);
+        JFrame frame = new JFrame("HospiSys - " + patientDetails[1] + " " + patientDetails[2] + " (" + patientDetails[3] + ")");
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(700, 350);
@@ -180,7 +182,7 @@ public class HospiSys {
         GridBagConstraints gbc = new GridBagConstraints();
 
         String[] labels = {
-                "ID",
+                "HospiSys ID",
                 "Forename",
                 "Surname",
                 "NHS Number",
@@ -195,7 +197,7 @@ public class HospiSys {
         };
 
         // Profile picture
-        JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/" + patientDetails[0] +".png")).getScaledInstance(150, 150, Image.SCALE_FAST)));
+        JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/" + patientDetails[0] +".png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
         profilePhoto.setBorder(new EmptyBorder(20,0,0,0));
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
