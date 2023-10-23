@@ -14,6 +14,31 @@ public class HospiSysData {
 
     private final File file;
 
+    public static String[] patientLabels = {
+            "HospiSys ID",
+            "Forename",
+            "Surname",
+            "NHS Number",
+            "Address",
+            "GP",
+            "Telephone",
+            "Email",
+            "Location",
+            "Conditions",
+            "Medication",
+            "Notes"
+    };
+
+    public static String[] staffLabels = {
+            "Forename",
+            "Surname",
+            "Role",
+            "Location",
+            "Department",
+            "Email",
+            "Telephone"
+    };
+
     HospiSysData(String path) {
         this.file = new File(path);
     }

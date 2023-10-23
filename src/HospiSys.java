@@ -110,7 +110,7 @@ public class HospiSys {
         });
 
         JButton addNewPatient = new JButton("Add New");
-        addNewPatient.addActionListener(e -> addNew("Patient"));
+        addNewPatient.addActionListener(e -> addNew('p'));
 
         JButton staffSearch = new JButton("Search");
         staffSearch.addActionListener(e -> {
@@ -122,7 +122,7 @@ public class HospiSys {
         });
 
         JButton addNewStaff = new JButton("Add New");
-        addNewStaff.addActionListener(e -> addNew("Staff"));
+        addNewStaff.addActionListener(e -> addNew('s'));
 
         JButton logout = new JButton("Log Out");
         logout.addActionListener(e -> {
@@ -160,8 +160,67 @@ public class HospiSys {
         patientProfile(1);
     }
 
-    private static void addNew(String category) {
-        Playfair.encrypt("Benjamin says hellos", "William");
+    // Add record screen
+    private static void addNew(char category) {
+        String categoryString = "";
+        String[] labels;
+        String path;
+
+        if (category == 'p') {
+            categoryString = "Patient";
+            labels = HospiSysData.patientLabels;
+            path = "dat/patients.hsd";
+        } else {
+            categoryString = "Staff";
+            labels = HospiSysData.staffLabels;
+            path = "dat/staff.hsd";
+        }
+
+        HospiSysData hsd = new HospiSysData(path);
+
+        // JFrame initialisation and configurations
+        JFrame frame = new JFrame("HospiSys - New " + categoryString);
+        frame.getContentPane().setLayout(new GridLayout(0, 1));
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+
+        TextField[] textFields = new TextField[labels.length - 1]; // id is auto generated so is excluded
+
+        for (int i = 0; i < textFields.length; i++) {
+            JPanel labelsPanel = new JPanel();
+            labelsPanel.setLayout(new BorderLayout());
+            TextField field = new TextField(30);
+
+            textFields[i] = field;
+
+            labelsPanel.add(new JLabel(" " + labels[i + 1] + ": "), BorderLayout.WEST);
+            labelsPanel.add(field, BorderLayout.CENTER);
+
+            frame.getContentPane().add(labelsPanel);
+        }
+
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            String[] details = new String[textFields.length];
+            for (int i = 0; i < textFields.length; i++) {
+                details[i] = textFields[i].getText();
+            }
+
+            try {
+                hsd.write(details);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            frame.dispose();
+
+        });
+
+        frame.getContentPane().add(saveButton);
+
+        frame.setVisible(true);
+
     }
 
     // Patient profile screen
@@ -181,20 +240,7 @@ public class HospiSys {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        String[] labels = {
-                "HospiSys ID",
-                "Forename",
-                "Surname",
-                "NHS Number",
-                "Address",
-                "GP",
-                "Telephone",
-                "Email",
-                "Location",
-                "Conditions",
-                "Medication",
-                "Notes"
-        };
+        String[] labels = HospiSysData.patientLabels;
 
         // Profile picture
         JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/" + patientDetails[0] +".png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
@@ -256,14 +302,6 @@ public class HospiSys {
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
-        String[] exampleDetails = {
-                "Example",
-                "Staff",
-                "Example Role",
-                "Example Hospital",
-                "Example Ward",
-                "example@nhs.uk"
-        };
 
         frame.setVisible(true);
     }
