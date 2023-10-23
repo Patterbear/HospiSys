@@ -169,14 +169,14 @@ public class HospiSys {
 
         // Load patient details
         HospiSysData hsd = new HospiSysData("dat/patients.hsd");
-        String[] patientDetails = hsd.get(id);
+        String[] patientDetails = hsd.retrieve(id);
 
         System.out.println(Arrays.toString(HospiSysData.encryptRecord(patientDetails)));
 
         JFrame frame = new JFrame("HospiSys - " + patientDetails[1] + " " + patientDetails[2] + " (" + patientDetails[3] + ")");
         frame.getContentPane().setLayout(new GridBagLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(700, 350);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(725, 350);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -247,6 +247,8 @@ public class HospiSys {
 
 
         frame.setVisible(true);
+
+        hsd.write(new String[]{"test", "test"});
     }
 
     private static void staffProfile(int id) {

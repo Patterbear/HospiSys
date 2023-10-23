@@ -2,6 +2,11 @@ package src;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -43,7 +48,7 @@ public class HospiSysData {
         return readout;
     }
 
-    public String[] get(int id) throws FileNotFoundException {
+    public String[] retrieve(int id) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
         String record = "";
 
@@ -57,5 +62,19 @@ public class HospiSysData {
         }
 
         return record.split("-");
+    }
+
+    public void write(String[] record) throws IOException {
+        // Generate and append id
+        String id = Integer.toString((int)Files.lines(file.toPath()).count()) + "-";
+        Files.write(file.toPath(), id.getBytes(), StandardOpenOption.APPEND);
+
+        for (int i = 0; i < record.length - 1; i++) {
+            Files.write(file.toPath(), (record[i] + "-").getBytes(), StandardOpenOption.APPEND);
+        }
+
+        // Add final field and new line
+        Files.write(file.toPath(), (record[record.length - 1] + "\n").getBytes(), StandardOpenOption.APPEND);
+
     }
 }
