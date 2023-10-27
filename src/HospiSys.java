@@ -69,13 +69,21 @@ public class HospiSys {
     // login function
     // verifies login details and opens menu
     private static void login(String user, String password, JFrame frame) throws IOException {
-        frame.dispose();
-        if(!user.equals("") && !password.equals("")) {
-            String msg = Playfair.encrypt(user, password);
-            System.out.println(Playfair.decrypt(msg, password));
-
+        // temporary access
+        if(user.equals("") && password.equals("")) {
+            menu(user);
         }
-        menu(user);
+
+        HospiSysData hsd = new HospiSysData("dat/users.hsd");
+
+        if(hsd.verifyUser(user, password)) {
+            frame.dispose();
+            menu(user);
+        } else {
+            JOptionPane.showMessageDialog(null, "Incorrect Login");
+            // hsd.writeUser(user, password);
+        }
+
     }
 
     // Menu function
@@ -219,7 +227,7 @@ public class HospiSys {
             }
 
             try {
-                hsd.write(details);
+                hsd.writeRecord(details);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -232,6 +240,10 @@ public class HospiSys {
 
         frame.setVisible(true);
 
+    }
+
+    private static void addUser(String user, String password) throws IOException {
+        new HospiSysData("dat/users.hsd").writeUser(user, password);
     }
 
     // Patient profile screen
