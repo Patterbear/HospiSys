@@ -158,6 +158,11 @@ public class HospiSys {
     private static void search(String category) throws IOException {
         patientProfile(0);
         patientProfile(1);
+        patientProfile(2);
+        patientProfile(3);
+        patientProfile(4);
+        patientProfile(5);
+        patientProfile(6);
     }
 
     // Add record screen
@@ -204,7 +209,13 @@ public class HospiSys {
         saveButton.addActionListener(e -> {
             String[] details = new String[textFields.length];
             for (int i = 0; i < textFields.length; i++) {
-                details[i] = textFields[i].getText();
+
+                // handles empty input
+                if (textFields[i].getText().equals("")) {
+                    details[i] = "N/A";
+                } else {
+                    details[i] = textFields[i].getText();
+                }
             }
 
             try {
@@ -230,7 +241,11 @@ public class HospiSys {
         HospiSysData hsd = new HospiSysData("dat/patients.hsd");
         String[] patientDetails = hsd.retrieve(id);
 
-        System.out.println(Arrays.toString(HospiSysData.encryptRecord(patientDetails)));
+        if (Integer.parseInt(patientDetails[0]) > 1) { // temp fix for no profile photo
+            patientDetails[0] = "0";
+        }
+
+        System.out.println(Arrays.toString(patientDetails));
 
         JFrame frame = new JFrame("HospiSys - " + patientDetails[1] + " " + patientDetails[2] + " (" + patientDetails[3] + ")");
         frame.getContentPane().setLayout(new GridBagLayout());
@@ -293,8 +308,6 @@ public class HospiSys {
 
 
         frame.setVisible(true);
-
-        hsd.write(new String[]{"test", "test"});
     }
 
     private static void staffProfile(int id) {
