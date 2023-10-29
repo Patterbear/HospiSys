@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -40,6 +41,10 @@ public class HospiSysData {
 
     HospiSysData(String path) {
         this.file = new File(path);
+    }
+
+    public int nextId() throws IOException {
+        return (int)Files.lines(file.toPath()).count();
     }
 
 
@@ -90,7 +95,7 @@ public class HospiSysData {
 
     public void writeRecord(String[] record) throws IOException {
         // Generate and append id
-        String id = Integer.toString((int)Files.lines(file.toPath()).count()) + "-";
+        String id = Integer.toString(this.nextId()) + "-";
         Files.write(file.toPath(), id.getBytes(), StandardOpenOption.APPEND);
 
         for (int i = 0; i < record.length - 1; i++) {

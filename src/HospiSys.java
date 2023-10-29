@@ -3,9 +3,14 @@ package src;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
 // Main class
@@ -71,7 +76,9 @@ public class HospiSys {
     private static void login(String user, String password, JFrame frame) throws IOException {
         // temporary access
         if(user.equals("") && password.equals("")) {
+            frame.dispose();
             menu(user);
+            return;
         }
 
         HospiSysData hsd = new HospiSysData("dat/users.hsd");
@@ -118,7 +125,13 @@ public class HospiSys {
         });
 
         JButton addNewPatient = new JButton("Add New");
-        addNewPatient.addActionListener(e -> addNew('p'));
+        addNewPatient.addActionListener(e -> {
+            try {
+                addNew('p');
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         JButton staffSearch = new JButton("Search");
         staffSearch.addActionListener(e -> {
@@ -130,7 +143,13 @@ public class HospiSys {
         });
 
         JButton addNewStaff = new JButton("Add New");
-        addNewStaff.addActionListener(e -> addNew('s'));
+        addNewStaff.addActionListener(e -> {
+            try {
+                addNew('s');
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         JButton logout = new JButton("Log Out");
         logout.addActionListener(e -> {
@@ -164,17 +183,13 @@ public class HospiSys {
     }
 
     private static void search(String category) throws IOException {
-        patientProfile(0);
-        patientProfile(1);
-        patientProfile(2);
-        patientProfile(3);
-        patientProfile(4);
-        patientProfile(5);
-        patientProfile(6);
+        for (int i = 0; i < new HospiSysData("dat/patients.hsd").nextId(); i++) {
+            patientProfile(i);
+        }
     }
 
     // Add record screen
-    private static void addNew(char category) {
+    private static void addNew(char category) throws IOException {
         String categoryString = "";
         String[] labels;
         String path;
@@ -193,28 +208,63 @@ public class HospiSys {
 
         // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - New " + categoryString);
-        frame.getContentPane().setLayout(new GridLayout(0, 1));
+        //frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(480, 560);
+        frame.setResizable(false);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
 
+        // current profile photo
+        JPanel profilePhotoPanel = new JPanel();
+        JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/0.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+
+        // profile photo selection
+        JButton uploadButton = new JButton("Upload");
+        JFileChooser jfc = new JFileChooser();
+        jfc.setSelectedFile(new File("img/0.png"));
+        jfc.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "png", "bmp", "webmp", "gif"));
+
+        uploadButton.addActionListener(e -> {
+            jfc.showOpenDialog(null);
+            try {
+                profilePhoto.setIcon(new ImageIcon(ImageIO.read(jfc.getSelectedFile()).getScaledInstance(200, 200, Image.SCALE_FAST)));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        profilePhotoPanel.add(profilePhoto);
+        profilePhotoPanel.add(uploadButton);
+        frame.getContentPane().add(profilePhotoPanel, BorderLayout.PAGE_START);
+
         TextField[] textFields = new TextField[labels.length - 1]; // id is auto generated so is excluded
+        JPanel mainPanel = new JPanel(new GridLayout(0, 1));
 
         for (int i = 0; i < textFields.length; i++) {
-            JPanel labelsPanel = new JPanel();
-            labelsPanel.setLayout(new BorderLayout());
-            TextField field = new TextField(30);
+            JPanel labelPanel = new JPanel();
+            labelPanel.setLayout(new BorderLayout());
+            TextField field = new TextField(20);
 
             textFields[i] = field;
 
-            labelsPanel.add(new JLabel(" " + labels[i + 1] + ": "), BorderLayout.WEST);
-            labelsPanel.add(field, BorderLayout.CENTER);
+            labelPanel.add(new JLabel(" " + labels[i + 1] + ": "), BorderLayout.LINE_START);
+            labelPanel.add(field, BorderLayout.CENTER);
 
-            frame.getContentPane().add(labelsPanel);
+            mainPanel.add(labelPanel, BorderLayout.CENTER);
         }
 
         JButton saveButton = new JButton("Save");
+        String finalCategoryString = categoryString;
         saveButton.addActionListener(e -> {
+            // saving uploaded profile image
+            try {
+                Files.copy(Paths.get(jfc.getSelectedFile().getPath()), Paths.get("img/" + Integer.toString(hsd.nextId()) + ".png"), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+
+            // saving details
             String[] details = new String[textFields.length];
             for (int i = 0; i < textFields.length; i++) {
 
@@ -233,10 +283,12 @@ public class HospiSys {
             }
 
             frame.dispose();
+            JOptionPane.showMessageDialog(null, finalCategoryString + " created successfully.");
 
         });
 
-        frame.getContentPane().add(saveButton);
+        mainPanel.add(saveButton, BorderLayout.CENTER);
+        frame.getContentPane().add(mainPanel);
 
         frame.setVisible(true);
 
@@ -252,10 +304,6 @@ public class HospiSys {
         // Load patient details
         HospiSysData hsd = new HospiSysData("dat/patients.hsd");
         String[] patientDetails = hsd.retrieve(id);
-
-        if (Integer.parseInt(patientDetails[0]) > 1) { // temp fix for no profile photo
-            patientDetails[0] = "0";
-        }
 
         System.out.println(Arrays.toString(patientDetails));
 
