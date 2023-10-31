@@ -183,7 +183,7 @@ public class HospiSys {
 
     private static void search(String category) throws IOException {
         for (int i = 0; i < new HospiSysData("dat/patients.hsd").nextId(); i++) {
-            //patientProfile(i);
+            patientProfile(i);
         }
         JFrame frame = new JFrame("HospiSys - Search");
         frame.getContentPane().setLayout(new GridLayout(0, 1));
@@ -215,6 +215,7 @@ public class HospiSys {
             resultPanel.add(new JLabel(hsd.retrieve(i)[1]));
             resultPanel.add(new JLabel(hsd.retrieve(i)[2]));
             resultPanel.add(new JLabel(hsd.retrieve(i)[4]));
+            resultPanel.add(new JLabel(hsd.retrieve(i)[5]));
 
             resultPanel.add(new JButton("View"));
 

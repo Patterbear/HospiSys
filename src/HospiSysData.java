@@ -19,6 +19,7 @@ public class HospiSysData {
             "Forename",
             "Surname",
             "NHS Number",
+            "Date of Birth",
             "Address",
             "GP",
             "Telephone",
