@@ -3,7 +3,6 @@ package src;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
@@ -184,8 +183,50 @@ public class HospiSys {
 
     private static void search(String category) throws IOException {
         for (int i = 0; i < new HospiSysData("dat/patients.hsd").nextId(); i++) {
-            patientProfile(i);
+            //patientProfile(i);
         }
+        JFrame frame = new JFrame("HospiSys - Search");
+        frame.getContentPane().setLayout(new GridLayout(0, 1));
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(600, 200);
+        frame.setResizable(false);
+        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+
+        // search bar and criteria dropdown
+        JPanel searchPanel = new JPanel();
+        TextField searchBar = new TextField(20);
+        JComboBox criteriaDropdown = new JComboBox(HospiSysData.patientLabels);
+        JButton searchButton = new JButton("Search");
+
+        searchPanel.add(searchBar);
+        searchPanel.add(criteriaDropdown);
+        searchPanel.add(searchButton);
+
+        // results panel
+        JPanel resultsPanel = new JPanel(new GridLayout(0, 1));
+        JScrollPane resultsScrollPane = new JScrollPane(resultsPanel);
+
+
+        HospiSysData hsd = new HospiSysData("dat/patients.hsd");
+        // example search results
+        for (int i = 1; i < hsd.nextId(); i++) {
+            JPanel resultPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            resultPanel.add(new JLabel(hsd.retrieve(i)[0]));
+            resultPanel.add(new JLabel(hsd.retrieve(i)[1]));
+            resultPanel.add(new JLabel(hsd.retrieve(i)[2]));
+            resultPanel.add(new JLabel(hsd.retrieve(i)[4]));
+
+            resultPanel.add(new JButton("View"));
+
+            resultsPanel.add(resultPanel);
+        }
+
+        frame.getContentPane().add(searchPanel);
+        frame.getContentPane().add(resultsScrollPane);
+
+        frame.setVisible(true);
+
+
     }
 
     // Add record screen
@@ -284,7 +325,11 @@ public class HospiSys {
 
             frame.dispose();
             JOptionPane.showMessageDialog(null, finalCategoryString + " created successfully.");
-
+            try {
+                patientProfile(hsd.nextId() - 1); // opens newly created patient profile
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         mainPanel.add(saveButton, BorderLayout.CENTER);
