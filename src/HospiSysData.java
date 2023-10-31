@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class HospiSysData {
@@ -78,6 +80,10 @@ public class HospiSysData {
         return readout;
     }
 
+    private String[] formatRecord(String record) {
+        return record.split("-");
+    }
+
     public String[] retrieve(int id) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
         String record = "";
@@ -91,7 +97,34 @@ public class HospiSysData {
             }
         }
 
-        return record.split("-");
+        return formatRecord(record);
+    }
+
+    // Record search function
+    // returns a list of records matching the given search parameters
+    public String[][] search(String category, String term) throws FileNotFoundException {
+        int field = Arrays.asList(patientLabels).indexOf(category);
+        List<List<String>> resultList = new ArrayList<List<String>>();
+
+        Scanner scanner = new Scanner(file);
+
+        while (scanner.hasNextLine()) {
+            String[] record = formatRecord(scanner.nextLine());
+
+            if(record[field].equals(term)) {
+                resultList.add(List.of(record));
+            }
+        }
+
+        // convert list into 2D string array
+        String[][] results = new String[resultList.size()][];
+        for (int i = 0; i < resultList.size(); i++) {
+            List<String> result = resultList.get(i);
+            results[i] = result.toArray(new String[result.size()]);
+        }
+
+        return results;
+
     }
 
     public void writeRecord(String[] record) throws IOException {

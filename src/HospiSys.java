@@ -6,6 +6,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -181,14 +182,14 @@ public class HospiSys {
 
     }
 
+    // Search patients screen
+    // allows user to view records matching selected criteria
     private static void search(String category) throws IOException {
-        for (int i = 0; i < new HospiSysData("dat/patients.hsd").nextId(); i++) {
-            patientProfile(i);
-        }
+        // JFrame setup
         JFrame frame = new JFrame("HospiSys - Search");
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(600, 200);
+        frame.setSize(700, 400);
         frame.setResizable(false);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
 
@@ -206,21 +207,40 @@ public class HospiSys {
         JPanel resultsPanel = new JPanel(new GridLayout(0, 1));
         JScrollPane resultsScrollPane = new JScrollPane(resultsPanel);
 
-
         HospiSysData hsd = new HospiSysData("dat/patients.hsd");
-        // example search results
-        for (int i = 1; i < hsd.nextId(); i++) {
-            JPanel resultPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            resultPanel.add(new JLabel(hsd.retrieve(i)[0]));
-            resultPanel.add(new JLabel(hsd.retrieve(i)[1]));
-            resultPanel.add(new JLabel(hsd.retrieve(i)[2]));
-            resultPanel.add(new JLabel(hsd.retrieve(i)[4]));
-            resultPanel.add(new JLabel(hsd.retrieve(i)[5]));
 
-            resultPanel.add(new JButton("View"));
+        searchButton.addActionListener(e -> {
+            resultsPanel.removeAll();
+            try {
+                String[][] results = hsd.search(HospiSysData.patientLabels[criteriaDropdown.getSelectedIndex()], searchBar.getText());
+                for (int i = 0; i < results.length; i++) {
+                    JPanel resultPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                    resultPanel.add(new JLabel(results[i][0]));
+                    resultPanel.add(new JLabel(results[i][1]));
+                    resultPanel.add(new JLabel(results[i][2]));
+                    resultPanel.add(new JLabel(results[i][4]));
+                    resultPanel.add(new JLabel(results[i][5]));
 
-            resultsPanel.add(resultPanel);
-        }
+                    JButton viewButton = new JButton("View");
+                    int finalI = i;
+                    viewButton.addActionListener(e1 -> {
+                        try {
+                            patientProfile(results[finalI]);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+                    resultPanel.add(viewButton);
+
+                    resultsPanel.add(resultPanel);
+                }
+                resultsPanel.revalidate();
+                resultsPanel.repaint();
+
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         frame.getContentPane().add(searchPanel);
         frame.getContentPane().add(resultsScrollPane);
@@ -327,7 +347,7 @@ public class HospiSys {
             frame.dispose();
             JOptionPane.showMessageDialog(null, finalCategoryString + " created successfully.");
             try {
-                patientProfile(hsd.nextId() - 1); // opens newly created patient profile
+                patientProfile(hsd.retrieve(hsd.nextId() - 1)); // opens newly created patient profile
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -345,15 +365,13 @@ public class HospiSys {
     }
 
     // Patient profile screen
-    private static void patientProfile(int id) throws IOException {
+    private static void patientProfile(String[] patient) throws IOException {
 
         // Load patient details
         HospiSysData hsd = new HospiSysData("dat/patients.hsd");
-        String[] patientDetails = hsd.retrieve(id);
+        //String[] patientDetails = hsd.retrieve(id);
 
-        System.out.println(Arrays.toString(patientDetails));
-
-        JFrame frame = new JFrame("HospiSys - " + patientDetails[1] + " " + patientDetails[2] + " (" + patientDetails[3] + ")");
+        JFrame frame = new JFrame("HospiSys - " + patient[1] + " " + patient[2] + " (" + patient[3] + ")");
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(725, 350);
@@ -364,7 +382,7 @@ public class HospiSys {
         String[] labels = HospiSysData.patientLabels;
 
         // Profile picture
-        JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/" + patientDetails[0] +".png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+        JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/" + patient[0] +".png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
         profilePhoto.setBorder(new EmptyBorder(20,0,0,0));
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
@@ -377,7 +395,7 @@ public class HospiSys {
         patientDetailsPanel.setBorder(new EmptyBorder(10,0,0,0));
 
         for (int i = 0; i < labels.length; i++) {
-            patientDetailsPanel.add(new JLabel("    " + labels[i] + ": " + patientDetails[i]));
+            patientDetailsPanel.add(new JLabel("    " + labels[i] + ": " + patient[i]));
         }
 
         gbc.gridx = 1;
