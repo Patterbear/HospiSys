@@ -102,7 +102,7 @@ public class HospiSys {
     }
 
     // Menu function
-    // will open menu screen
+    // opens menu screen
     private static void menu(String user) throws IOException {
 
         // menu window JFrame initialisation and configurations
@@ -120,14 +120,13 @@ public class HospiSys {
 
         // frame panels
         JPanel patientPanel = new JPanel();
-        JPanel staffPanel = new JPanel();
         JPanel logoutButtonPanel = new JPanel();
 
         // buttons
         JButton patientSearch = new JButton("Search");
         patientSearch.addActionListener(e -> {
             try {
-                search("Patient");
+                search();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -136,25 +135,7 @@ public class HospiSys {
         JButton addNewPatient = new JButton("Add New");
         addNewPatient.addActionListener(e -> {
             try {
-                addNew('p');
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-
-        JButton staffSearch = new JButton("Search");
-        staffSearch.addActionListener(e -> {
-            try {
-                search("Staff");
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-
-        JButton addNewStaff = new JButton("Add New");
-        addNewStaff.addActionListener(e -> {
-            try {
-                addNew('s');
+                addNew();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -175,16 +156,11 @@ public class HospiSys {
         patientPanel.add(patientSearch);
         patientPanel.add(addNewPatient);
 
-        staffPanel.add(new JLabel("Staff"));
-        staffPanel.add(staffSearch);
-        staffPanel.add(addNewStaff);
-
         logoutButtonPanel.add(logout);
 
         // add panels to frame
         frame.getContentPane().add(logo);
         frame.getContentPane().add(patientPanel);
-        frame.getContentPane().add(staffPanel);
         frame.getContentPane().add(logoutButtonPanel);
 
         frame.setVisible(true);
@@ -193,7 +169,7 @@ public class HospiSys {
 
     // Search patients screen
     // allows user to view records matching selected criteria
-    private static void search(String category) throws IOException {
+    private static void search() throws IOException {
         // JFrame setup
         JFrame frame = new JFrame("HospiSys - Search");
         frame.setLocationRelativeTo(null);
@@ -261,25 +237,13 @@ public class HospiSys {
     }
 
     // Add record screen
-    private static void addNew(char category) throws IOException {
-        String categoryString = "";
-        String[] labels;
-        String path;
+    private static void addNew() throws IOException {
+        String[] labels = HospiSysData.patientLabels;
 
-        if (category == 'p') {
-            categoryString = "Patient";
-            labels = HospiSysData.patientLabels;
-            path = "dat/patients.hsd";
-        } else {
-            categoryString = "Staff";
-            labels = HospiSysData.staffLabels;
-            path = "dat/staff.hsd";
-        }
-
-        HospiSysData hsd = new HospiSysData(path);
+        HospiSysData hsd = new HospiSysData("dat/patients.hsd");
 
         // JFrame initialisation and configurations
-        JFrame frame = new JFrame("HospiSys - New " + categoryString);
+        JFrame frame = new JFrame("HospiSys - New Patient");
         frame.setLocationRelativeTo(null);
         //frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setLocationRelativeTo(null);
@@ -328,7 +292,6 @@ public class HospiSys {
         }
 
         JButton saveButton = new JButton("Save");
-        String finalCategoryString = categoryString;
         saveButton.addActionListener(e -> {
             // saving uploaded profile image
             try {
@@ -357,7 +320,7 @@ public class HospiSys {
             }
 
             frame.dispose();
-            JOptionPane.showMessageDialog(null, finalCategoryString + " created successfully.");
+            JOptionPane.showMessageDialog(null, "Patient created successfully.");
             try {
                 patientProfile(hsd.retrieve(hsd.nextId() - 1)); // opens newly created patient profile
             } catch (IOException ex) {
@@ -372,16 +335,8 @@ public class HospiSys {
 
     }
 
-    private static void addUser(String user, String password) throws IOException {
-        new HospiSysData("dat/users.hsd").writeUser(user, password);
-    }
-
     // Patient profile screen
     private static void patientProfile(String[] patient) throws IOException {
-
-        // Load patient details
-        //HospiSysData hsd = new HospiSysData("dat/patients.hsd");
-        //String[] patientDetails = hsd.retrieve(id);
 
         JFrame frame = new JFrame("HospiSys - " + patient[1] + " " + patient[2] + " (" + patient[3] + ")");
         frame.setLocationRelativeTo(null);
@@ -443,16 +398,6 @@ public class HospiSys {
 
         frame.getContentPane().add(doneButton, gbc);
 
-
-        frame.setVisible(true);
-    }
-
-    private static void staffProfile(int id) {
-        JFrame frame = new JFrame("HospiSys - Example Patient");
-        frame.setLocationRelativeTo(null);
-        frame.getContentPane().setLayout(new GridLayout(0, 1));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
 
         frame.setVisible(true);
     }

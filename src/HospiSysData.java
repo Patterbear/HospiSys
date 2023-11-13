@@ -31,16 +31,6 @@ public class HospiSysData {
             "Notes"
     };
 
-    public static String[] staffLabels = {
-            "Forename",
-            "Surname",
-            "Role",
-            "Location",
-            "Department",
-            "Email",
-            "Telephone"
-    };
-
     HospiSysData(String path) {
         this.file = new File(path);
     }
@@ -147,7 +137,7 @@ public class HospiSysData {
     // returns a user record if given username hash exists in file
     private String[] readUser(String usernameHash) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
-        String user = "";
+        String user;
         String[] result = new String[1];
 
         while (scanner.hasNextLine()) {
