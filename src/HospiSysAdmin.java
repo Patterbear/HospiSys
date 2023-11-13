@@ -4,13 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class HospiSysAdmin {
 
     // Key attribute
     // used to encrypt/decrypt user data
-    private String adminKey = "adminkeyexample";
+    private static String adminKey = "adminkeyexample";
 
 
     // Verify admin status function
@@ -80,6 +81,7 @@ public class HospiSysAdmin {
         TextField passwordEntry = new TextField(20);
         passwordEntry.setEchoChar('*');
         JButton viewPassword = new JButton("Show");
+        viewPassword.addActionListener(e -> passwordEntry.setEchoChar((char)0));
         passwordPanel.add(new JLabel("Password: "));
         passwordPanel.add(passwordEntry);
         passwordPanel.add(viewPassword);
@@ -89,6 +91,7 @@ public class HospiSysAdmin {
         TextField repeatPasswordEntry = new TextField(20);
         repeatPasswordEntry.setEchoChar('*');
         JButton viewRepeatPassword = new JButton("Show");
+        viewRepeatPassword.addActionListener(e -> repeatPasswordEntry.setEchoChar((char)0));
         passwordPanel.add(new JLabel("Repeat password: "));
         passwordPanel.add(repeatPasswordEntry);
         passwordPanel.add(viewRepeatPassword);
@@ -100,6 +103,28 @@ public class HospiSysAdmin {
         makeAdminPanel.add(adminStatus);
 
         JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            if (passwordEntry.getText().equals(repeatPasswordEntry.getText())) {
+                try {
+                    new HospiSysData("dat/users.hsd").writeUser(usernameEntry.getText(), passwordEntry.getText());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                if (adminStatus.isSelected()) {
+                    try {
+                        new HospiSysData("dat/admin.hsd").encryptedWrite(usernameEntry.getText(), passwordEntry.getText());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+
+                frame.dispose();
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Passwords do not match.");
+            }
+
+        });
 
         frame.getContentPane().add(usernamePanel);
         frame.getContentPane().add(passwordPanel);

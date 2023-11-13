@@ -223,6 +223,11 @@ public class HospiSys {
                 resultsPanel.revalidate();
                 resultsPanel.repaint();
 
+                if (results.length == 0) {
+                    JOptionPane.showMessageDialog(null, "No results found.");
+                }
+
+
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
             }

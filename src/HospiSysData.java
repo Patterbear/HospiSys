@@ -123,13 +123,13 @@ public class HospiSysData {
     public void writeRecord(String[] record) throws IOException {
         // Generate and append id
         String id = Integer.toString(this.nextId()) + "-";
-        Files.write(file.toPath(), id.getBytes(), StandardOpenOption.APPEND);
+        write(id);
 
         for (int i = 0; i < record.length - 1; i++) {
-            Files.write(file.toPath(), (record[i] + "-").getBytes(), StandardOpenOption.APPEND);
+            write(record[i] + "-");
         }
         // Add final field and new line
-        Files.write(file.toPath(), (record[record.length - 1] + "\n").getBytes(), StandardOpenOption.APPEND);
+        write(record[record.length - 1] + "\n");
 
     }
 
@@ -168,7 +168,15 @@ public class HospiSysData {
     // encrypts and adds username and password to file
     public void writeUser(String username, String password) throws IOException {
         String hash = Playfair.encrypt(username, password) + "-" + Playfair.encrypt(password, password) + "\n";
-        Files.write(file.toPath(), hash.getBytes(), StandardOpenOption.APPEND);
+        write(hash);
         JOptionPane.showMessageDialog(null, "User created successfully.");
+    }
+
+    public void write(String s) throws IOException {
+        Files.write(file.toPath(), s.getBytes(), StandardOpenOption.APPEND);
+    }
+
+    public void encryptedWrite(String s, String key) throws IOException {
+        write(Playfair.encrypt(s, key) + "\n");
     }
 }
