@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
+
+import static src.HospiSysAdmin.accessAdminInterface;
+import static src.HospiSysAdmin.verifyAdmin;
 
 // Main class
 public class HospiSys {
@@ -22,6 +24,7 @@ public class HospiSys {
 
         // login window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Login");
+        frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
@@ -85,7 +88,12 @@ public class HospiSys {
 
         if(hsd.verifyUser(user, password)) {
             frame.dispose();
-            menu(user);
+            if(verifyAdmin(Playfair.encrypt(user, password))) {
+                accessAdminInterface(Playfair.encrypt(user, password));
+            } else {
+                menu(user);
+            }
+
         } else {
             JOptionPane.showMessageDialog(null, "Incorrect Login");
             // hsd.writeUser(user, password);
@@ -99,6 +107,7 @@ public class HospiSys {
 
         // menu window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Menu");
+        frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
@@ -187,6 +196,7 @@ public class HospiSys {
     private static void search(String category) throws IOException {
         // JFrame setup
         JFrame frame = new JFrame("HospiSys - Search");
+        frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(700, 400);
@@ -270,7 +280,9 @@ public class HospiSys {
 
         // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - New " + categoryString);
+        frame.setLocationRelativeTo(null);
         //frame.getContentPane().setLayout(new GridLayout(0, 1));
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(480, 560);
         frame.setResizable(false);
@@ -368,10 +380,11 @@ public class HospiSys {
     private static void patientProfile(String[] patient) throws IOException {
 
         // Load patient details
-        HospiSysData hsd = new HospiSysData("dat/patients.hsd");
+        //HospiSysData hsd = new HospiSysData("dat/patients.hsd");
         //String[] patientDetails = hsd.retrieve(id);
 
         JFrame frame = new JFrame("HospiSys - " + patient[1] + " " + patient[2] + " (" + patient[3] + ")");
+        frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(725, 350);
@@ -436,6 +449,7 @@ public class HospiSys {
 
     private static void staffProfile(int id) {
         JFrame frame = new JFrame("HospiSys - Example Patient");
+        frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,6 +109,10 @@ public class HospiSysData {
 
         while (scanner.hasNextLine()) {
             String[] record = formatRecord(scanner.nextLine());
+
+            if(term.equals("")) {
+                resultList.add(List.of(record));
+            }
 
             if(record[field].equals(term)) {
                 resultList.add(List.of(record));
