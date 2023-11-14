@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import net.miginfocom.swing.MigLayout;
+
 // System setup class
 public class HospiSysSetup {
 
@@ -30,18 +32,18 @@ public class HospiSysSetup {
         // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Select Install Location");
         frame.setLocationRelativeTo(null);
-        frame.getContentPane().setLayout(new GridLayout(0, 1));
+        frame.getContentPane().setLayout(new MigLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(650, 260);
         frame.setResizable(false);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 150, Image.SCALE_FAST)));
 
         // Folder selection section
         JPanel chooseFolderPanel = new JPanel();
-        TextField directoryEntry = new TextField(System.getProperty("user.home"), 30);
+        TextField directoryEntry = new TextField(System.getProperty("user.home"), 20);
         JButton changeDirectoryButton = new JButton("Change");
         JFileChooser jfc = new JFileChooser(directoryEntry.getText());
         jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -55,19 +57,23 @@ public class HospiSysSetup {
         chooseFolderPanel.add(directoryEntry);
         chooseFolderPanel.add(changeDirectoryButton);
 
+        // panel to display progress updates
         JPanel statusPanel = new JPanel(new GridLayout(0, 1));
 
         JButton nextButton = new JButton("Next");
+        Font nextButtonFont = new Font(nextButton.getFont().getName(),nextButton.getFont().getStyle(),24);
+
+        nextButton.setFont(nextButtonFont);
         nextButton.addActionListener(e -> {
             createFolders(jfc.getSelectedFile().getPath());
-            statusPanel.add(new JLabel("Folders created."));
+            statusPanel.add(new JLabel("- Folders created."));
 
             try {
                 createHSDs(jfc.getSelectedFile().getPath());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            statusPanel.add(new JLabel("Database files created."));
+            statusPanel.add(new JLabel("- Database files created."));
 
             statusPanel.revalidate();
             statusPanel.repaint();
@@ -76,13 +82,15 @@ public class HospiSysSetup {
             nextButton.setText("Finish");
             nextButton.removeActionListener(nextButton.getActionListeners()[0]);
             nextButton.addActionListener(e1 -> frame.dispose());
+
+
         });
 
 
         frame.getContentPane().add(logo);
-        frame.getContentPane().add(chooseFolderPanel);
+        frame.getContentPane().add(chooseFolderPanel, "wrap");
         frame.getContentPane().add(statusPanel);
-        frame.getContentPane().add(nextButton);
+        frame.getContentPane().add(nextButton, "span, align right");
 
         frame.setVisible(true);
 
@@ -93,21 +101,29 @@ public class HospiSysSetup {
     // Start method
     // opens setup initialisation screen
     private static void start() throws IOException {
-        // menu window JFrame initialisation and configurations
+        // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Setup");
         frame.setLocationRelativeTo(null);
-        frame.getContentPane().setLayout(new GridLayout(0, 1));
+        frame.getContentPane().setLayout(new MigLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
+        frame.setSize(450, 200);
         frame.setResizable(false);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 150, Image.SCALE_FAST)));
+
+        JLabel label = new JLabel("HospiSys Setup");
 
         JPanel buttonsPanel = new JPanel();
-        JButton begin = new JButton("Begin Setup");
+        JButton begin = new JButton("Begin");
         JButton close = new JButton("Exit");
+
+        Font font = new Font(begin.getFont().getName(),begin.getFont().getStyle(),24);
+        begin.setFont(font);
+        close.setFont(font);
+        label.setFont(font);
+
         begin.addActionListener(e -> {
             frame.dispose();
             try {
@@ -120,8 +136,10 @@ public class HospiSysSetup {
         buttonsPanel.add(begin);
         buttonsPanel.add(close);
 
-        frame.getContentPane().add(logo);
-        frame.getContentPane().add(buttonsPanel);
+        frame.getContentPane().add(logo, "align center, span 3 3, wrap");
+        frame.getContentPane().add(label, "align center, span 2, wrap");
+        frame.getContentPane().add(close, "align left");
+        frame.getContentPane().add(begin, "align right");
 
         frame.setVisible(true);
     }
