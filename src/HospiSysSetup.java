@@ -13,6 +13,77 @@ import net.miginfocom.swing.MigLayout;
 // System setup class
 public class HospiSysSetup {
 
+    public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);;
+
+    // Setup admin screen
+    // TODO: update to simply call 'createUser' in HospiSysAdmin
+    private static void setupAdmin(String path) throws IOException {
+        // Frame setup
+        JFrame frame = new JFrame("HospiSys - Setup Admin");
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(new GridLayout(0, 1));
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(480, 450);
+        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+
+        // Username entry
+        JPanel usernamePanel = new JPanel();
+        TextField usernameEntry = new TextField(20);
+        usernamePanel.add(new JLabel("Username: "));
+        usernamePanel.add(usernameEntry);
+
+        // Password entry
+        JPanel passwordPanel = new JPanel();
+        TextField passwordEntry = new TextField(20);
+        passwordEntry.setEchoChar('*');
+        JButton viewPassword = new JButton("Show");
+        viewPassword.addActionListener(e -> passwordEntry.setEchoChar((char)0));
+        passwordPanel.add(new JLabel("Password: "));
+        passwordPanel.add(passwordEntry);
+        passwordPanel.add(viewPassword);
+
+        // Repeat password entry
+        JPanel repeatPasswordPanel = new JPanel();
+        TextField repeatPasswordEntry = new TextField(20);
+        repeatPasswordEntry.setEchoChar('*');
+        JButton viewRepeatPassword = new JButton("Show");
+        viewRepeatPassword.addActionListener(e -> repeatPasswordEntry.setEchoChar((char)0));
+        passwordPanel.add(new JLabel("Repeat password: "));
+        passwordPanel.add(repeatPasswordEntry);
+        passwordPanel.add(viewRepeatPassword);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            if (passwordEntry.getText().equals(repeatPasswordEntry.getText())) {
+                try {
+                    new HospiSysData(path + "/HospiSys/dat/users.hsd").writeUser(usernameEntry.getText(), passwordEntry.getText());
+                    new HospiSysData(path + "/HospiSys/dat/admin.hsd").encryptedWrite(usernameEntry.getText(), passwordEntry.getText());
+
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                frame.dispose();
+                try {
+                    HospiSys.start();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Passwords do not match.");
+            }
+
+        });
+
+        frame.getContentPane().add(usernamePanel);
+        frame.getContentPane().add(passwordPanel);
+        frame.getContentPane().add(repeatPasswordPanel);
+        frame.getContentPane().add(saveButton);
+
+        frame.setVisible(true);
+    }
+
     // Create folders function
     private static void createFolders(String path) {
         new File(path + "/HospiSys").mkdirs();
@@ -47,6 +118,7 @@ public class HospiSysSetup {
         JButton changeDirectoryButton = new JButton("Change");
         JFileChooser jfc = new JFileChooser(directoryEntry.getText());
         jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        jfc.setSelectedFile(new File(System.getProperty("user.home")));
 
         changeDirectoryButton.addActionListener(e -> {
             jfc.showOpenDialog(null);
@@ -78,10 +150,17 @@ public class HospiSysSetup {
             statusPanel.revalidate();
             statusPanel.repaint();
 
-            // change button text and function
-            nextButton.setText("Finish");
+            // change button function and text
+            nextButton.setText("Done");
             nextButton.removeActionListener(nextButton.getActionListeners()[0]);
-            nextButton.addActionListener(e1 -> frame.dispose());
+            nextButton.addActionListener(e1 -> {
+                try {
+                    frame.dispose();
+                    setupAdmin(jfc.getSelectedFile().getPath());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
 
 
         });
@@ -101,6 +180,7 @@ public class HospiSysSetup {
     // Start method
     // opens setup initialisation screen
     private static void start() throws IOException {
+
         // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Setup");
         frame.setLocationRelativeTo(null);
@@ -119,7 +199,6 @@ public class HospiSysSetup {
         JButton begin = new JButton("Begin");
         JButton close = new JButton("Exit");
 
-        Font font = new Font(begin.getFont().getName(),begin.getFont().getStyle(),24);
         begin.setFont(font);
         close.setFont(font);
         label.setFont(font);
