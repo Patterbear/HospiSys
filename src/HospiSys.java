@@ -80,7 +80,7 @@ public class HospiSys {
         // temporary access
         if(user.equals("") && password.equals("")) {
             frame.dispose();
-            menu(user);
+            menu();
             return;
         }
 
@@ -91,7 +91,7 @@ public class HospiSys {
             if(verifyAdmin(Playfair.encrypt(user, password))) {
                 accessAdminInterface(Playfair.encrypt(user, password));
             } else {
-                menu(user);
+                menu();
             }
 
         } else {
@@ -103,7 +103,7 @@ public class HospiSys {
 
     // Menu function
     // opens menu screen
-    private static void menu(String user) throws IOException {
+    public static void menu() throws IOException {
 
         // menu window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Menu");
@@ -201,6 +201,8 @@ public class HospiSys {
                 String[][] results = hsd.search(HospiSysData.patientLabels[criteriaDropdown.getSelectedIndex()], searchBar.getText());
                 for (int i = 0; i < results.length; i++) {
                     JPanel resultPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+                    // attributes for preview
                     resultPanel.add(new JLabel(results[i][0]));
                     resultPanel.add(new JLabel(results[i][1]));
                     resultPanel.add(new JLabel(results[i][2]));

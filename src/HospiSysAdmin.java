@@ -44,10 +44,13 @@ public class HospiSysAdmin {
 
         // Frame setup
         JFrame frame = new JFrame("HospiSys - Admin Interface");
+        frame.setLayout(new GridLayout(0, 1));
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(725, 350);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+
+        JPanel buttonsPanel = new JPanel();
 
         // new user button
         JButton newUserButton = new JButton("Create New User");
@@ -59,7 +62,34 @@ public class HospiSysAdmin {
             }
         });
 
-        frame.add(newUserButton);
+        JButton staffInterfaceButton = new JButton("Staff Interface");
+        staffInterfaceButton.addActionListener(e -> {
+            frame.dispose();
+            try {
+                HospiSys.menu();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        buttonsPanel.add(newUserButton);
+        buttonsPanel.add(staffInterfaceButton);
+
+        JButton logoutButton = new JButton("Log Out");
+        logoutButton.addActionListener(e -> {
+            frame.dispose();
+            try {
+                HospiSys.start();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        frame.getContentPane().add(new JLabel("System Status: Online"));
+        frame.getContentPane().add(buttonsPanel);
+        frame.getContentPane().add(logoutButton);
+
+
 
         frame.setVisible(true);
     }
@@ -70,7 +100,7 @@ public class HospiSysAdmin {
     // allows assignment of admin status
     private static void newUser() throws IOException {
         // Frame setup
-        JFrame frame = new JFrame("HospiSys - Create new user");
+        JFrame frame = new JFrame("HospiSys - Create New User");
         frame.setLocationRelativeTo(null);
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -82,8 +112,7 @@ public class HospiSysAdmin {
         JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 150, Image.SCALE_FAST)));
 
         // label
-        JLabel label = new JLabel("Create admin account:");
-        //label.setFont(font);
+        JLabel label = new JLabel("Create new account:");
 
         // entries section panel
         JPanel entriesPanel = new JPanel(new GridBagLayout());
