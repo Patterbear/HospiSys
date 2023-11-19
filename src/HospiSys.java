@@ -39,6 +39,7 @@ public class HospiSys {
         // logo
         JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
 
+        // currently unused
         JLabel label = new JLabel("HospiSys v1.0");
         label.setFont(font);
 
@@ -66,7 +67,15 @@ public class HospiSys {
         passwordEntry.setEchoChar('*');
         JButton viewPassword = new JButton("Show");
         //viewPassword.setFont(font);
-        viewPassword.addActionListener(e -> passwordEntry.setEchoChar((char)0));
+        viewPassword.addActionListener(e -> {
+            if (passwordEntry.getEchoChar() == '*') {
+                passwordEntry.setEchoChar((char)0);
+                viewPassword.setText("Hide");
+            } else {
+                passwordEntry.setEchoChar('*');
+                viewPassword.setText("Show");
+            }
+        });
         entriesGbc.gridx = 0;
         entriesGbc.gridy = 1;
         entriesGbc.anchor = GridBagConstraints.CENTER;
@@ -95,7 +104,7 @@ public class HospiSys {
         gbc.gridwidth = 3;
         frame.getContentPane().add(logo, gbc);
 
-        // add username panel
+        // add entries panel
         gbc.gridy = 1;
         gbc.gridheight = 2;
         gbc.gridwidth = 3;

@@ -131,7 +131,15 @@ public class HospiSysAdmin {
         TextField passwordEntry = new TextField(20);
         passwordEntry.setEchoChar('*');
         JButton viewPassword = new JButton("Show");
-        viewPassword.addActionListener(e -> passwordEntry.setEchoChar((char)0));
+        viewPassword.addActionListener(e -> {
+            if (passwordEntry.getEchoChar() == '*') {
+                viewPassword.setText("Hide");
+                passwordEntry.setEchoChar((char)0);
+            } else {
+                viewPassword.setText("Show");
+                passwordEntry.setEchoChar('*');
+            }
+        });
         entriesGbc.gridx = 0;
         entriesGbc.gridy = 1;
         entriesGbc.anchor = GridBagConstraints.CENTER;
@@ -146,7 +154,15 @@ public class HospiSysAdmin {
         TextField repeatPasswordEntry = new TextField(20);
         repeatPasswordEntry.setEchoChar('*');
         JButton viewRepeatPassword = new JButton("Show");
-        viewRepeatPassword.addActionListener(e -> repeatPasswordEntry.setEchoChar((char)0));
+        viewRepeatPassword.addActionListener(e -> {
+            if (repeatPasswordEntry.getEchoChar() == '*') {
+                repeatPasswordEntry.setEchoChar((char)0);
+                viewRepeatPassword.setText("Hide");
+            } else {
+                viewRepeatPassword.setText("Show");
+                repeatPasswordEntry.setEchoChar('*');
+            }
+        });
         entriesGbc.gridx = 0;
         entriesGbc.gridy = 2;
         entriesGbc.anchor = GridBagConstraints.CENTER;
