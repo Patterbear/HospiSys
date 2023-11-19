@@ -6,14 +6,14 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import net.miginfocom.swing.MigLayout;
+import java.util.Comparator;
 
 // System setup class
 public class HospiSysSetup {
 
-    public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);;
+    private static Font font = new Font(Font.DIALOG, Font.BOLD, 24);;
 
     // Setup admin screen
     // TODO: update to simply call 'createUser' in HospiSysAdmin
@@ -24,7 +24,7 @@ public class HospiSysSetup {
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(640, 250);
+        frame.setSize(640, 275);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
 
         // logo
@@ -34,32 +34,50 @@ public class HospiSysSetup {
         JLabel label = new JLabel("Create admin account:");
         label.setFont(font);
 
+        // entries section panel
+        JPanel entriesPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints entriesGbc = new GridBagConstraints();
+
         // Username entry
-        JPanel usernamePanel = new JPanel();
         TextField usernameEntry = new TextField(20);
-        usernamePanel.add(new JLabel("Username: "));
-        usernamePanel.add(usernameEntry);
+        entriesGbc.gridx = 0;
+        entriesGbc.gridy = 0;
+        entriesPanel.add(new JLabel("Username:"), entriesGbc);
+        entriesGbc.gridx = 1;
+        entriesGbc.anchor = GridBagConstraints.WEST;
+        entriesPanel.add(usernameEntry, entriesGbc);
 
         // Password entry
-        JPanel passwordPanel = new JPanel();
         TextField passwordEntry = new TextField(20);
         passwordEntry.setEchoChar('*');
         JButton viewPassword = new JButton("Show");
         viewPassword.addActionListener(e -> passwordEntry.setEchoChar((char)0));
-        passwordPanel.add(new JLabel("Password: "));
-        passwordPanel.add(passwordEntry);
-        passwordPanel.add(viewPassword);
+        entriesGbc.gridx = 0;
+        entriesGbc.gridy = 1;
+        entriesGbc.anchor = GridBagConstraints.CENTER;
+        entriesPanel.add(new JLabel("Password:"), entriesGbc);
+        entriesGbc.gridx = 1;
+        entriesGbc.anchor = GridBagConstraints.WEST;
+        entriesPanel.add(passwordEntry, entriesGbc);
+        entriesGbc.gridx = 2;
+        entriesPanel.add(viewPassword, entriesGbc);
 
         // Repeat password entry
-        JPanel repeatPasswordPanel = new JPanel();
         TextField repeatPasswordEntry = new TextField(20);
         repeatPasswordEntry.setEchoChar('*');
         JButton viewRepeatPassword = new JButton("Show");
         viewRepeatPassword.addActionListener(e -> repeatPasswordEntry.setEchoChar((char)0));
-        repeatPasswordPanel.add(new JLabel("Repeat password: "));
-        repeatPasswordPanel.add(repeatPasswordEntry);
-        repeatPasswordPanel.add(viewRepeatPassword);
+        entriesGbc.gridx = 0;
+        entriesGbc.gridy = 2;
+        entriesGbc.anchor = GridBagConstraints.CENTER;
+        entriesPanel.add(new JLabel("Repeat Password:"), entriesGbc);
+        entriesGbc.gridx = 1;
+        entriesGbc.anchor = GridBagConstraints.WEST;
+        entriesPanel.add(repeatPasswordEntry, entriesGbc);
+        entriesGbc.gridx = 2;
+        entriesPanel.add(viewRepeatPassword, entriesGbc);
 
+        // save button
         JButton saveButton = new JButton("Save");
         saveButton.setFont(font);
         saveButton.addActionListener(e -> {
@@ -99,30 +117,52 @@ public class HospiSysSetup {
 
         // add username panel
         gbc.gridy = 1;
-        frame.getContentPane().add(usernamePanel, gbc);
-
-        // add password panel
-        gbc.gridy = 2;
-        frame.getContentPane().add(passwordPanel, gbc);
-
-        // add repeat password panel
-        gbc.gridy = 3;
-        frame.getContentPane().add(repeatPasswordPanel, gbc);
+        gbc.gridheight = 3;
+        gbc.gridwidth = 3;
+        frame.getContentPane().add(entriesPanel, gbc);
 
         // add save button
         gbc.gridy = 4;
         gbc.gridx = 3;
         gbc.gridwidth = 1;
+        gbc.gridheight = 1;
         frame.getContentPane().add(saveButton, gbc);
 
         frame.setVisible(true);
     }
 
     // Create folders function
-    private static void createFolders(String path) {
+    private static void createFolders(String path) throws IOException {
+        Path folderPath = Path.of(path + "/HospiSys");
+        if(Files.exists(folderPath)) {
+
+            // pop up gives the user option to delete existing installation
+            int choice = JOptionPane.showConfirmDialog(null,
+                    "HospiSys installation already exists. Delete?",
+                    "Installation found",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if(choice == JOptionPane.YES_OPTION) {
+                deleteInstallation(folderPath);
+            } else {
+                return;
+            }
+        }
+
         new File(path + "/HospiSys").mkdirs();
         new File(path + "/HospiSys/dat").mkdirs();
         new File(path + "/HospiSys/img").mkdirs();
+    }
+
+    // Delete existing installation function
+    // deletes an existing installation if found
+    private static void deleteInstallation(Path folderPath) throws IOException {
+        Files.walk(folderPath).sorted(Comparator.reverseOrder()).forEach(path -> {
+            try {
+                Files.delete(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     // Create data files method
@@ -169,7 +209,11 @@ public class HospiSysSetup {
 
         nextButton.setFont(nextButtonFont);
         nextButton.addActionListener(e -> {
-            createFolders(jfc.getSelectedFile().getPath());
+            try {
+                createFolders(jfc.getSelectedFile().getPath());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             try {
                 createHSDs(jfc.getSelectedFile().getPath());
             } catch (IOException ex) {
