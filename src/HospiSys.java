@@ -29,11 +29,10 @@ public class HospiSys {
     public static void start() throws IOException {
         // login window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Login");
-        //frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900, 300);
+        frame.setSize(700, 350);
         frame.setResizable(false);
         frame.setIconImage(logoImage);
 
@@ -66,7 +65,7 @@ public class HospiSys {
         passwordEntry.setFont(font);
         passwordEntry.setEchoChar('*');
         JButton viewPassword = new JButton("Show");
-        viewPassword.setFont(font);
+        //viewPassword.setFont(font);
         viewPassword.addActionListener(e -> passwordEntry.setEchoChar((char)0));
         entriesGbc.gridx = 0;
         entriesGbc.gridy = 1;
@@ -76,6 +75,7 @@ public class HospiSys {
         entriesGbc.anchor = GridBagConstraints.WEST;
         entriesPanel.add(passwordEntry, entriesGbc);
         entriesGbc.gridx = 2;
+        entriesGbc.insets = new Insets(10, 10, 10, 10);
         entriesPanel.add(viewPassword, entriesGbc);
 
         // login button
@@ -92,32 +92,24 @@ public class HospiSys {
         // add logo
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridheight = 4;
-        frame.getContentPane().add(logo, gbc);
-
-        // add label
-        gbc.gridx = 1;
-        gbc.gridheight = 1;
         gbc.gridwidth = 3;
-        frame.getContentPane().add(label, gbc);
-
+        frame.getContentPane().add(logo, gbc);
 
         // add username panel
         gbc.gridy = 1;
-        gbc.gridheight = 3;
+        gbc.gridheight = 2;
         gbc.gridwidth = 3;
         frame.getContentPane().add(entriesPanel, gbc);
 
         // add login button
-        gbc.gridy = 4;
-        gbc.gridx = 3;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridy = 3;
+        gbc.gridx = 2;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         frame.getContentPane().add(loginButton, gbc);
 
         frame.setVisible(true);
-
-
 
     }
 
