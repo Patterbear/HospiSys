@@ -18,42 +18,69 @@ import static src.HospiSysAdmin.verifyAdmin;
 // Main class
 public class HospiSys {
 
+
+    public static Image logoImage = new ImageIcon("img/logo.png").getImage();
+
+    public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);
+
+
     // 'Start' method
     // creates the initial login screen
-    static void start() throws IOException {
-
+    public static void start() throws IOException {
         // login window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Login");
-        frame.setLocationRelativeTo(null);
-        frame.getContentPane().setLayout(new GridLayout(0, 1));
+        //frame.setLocationRelativeTo(null);
+        frame.getContentPane().setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
+        frame.setSize(900, 300);
         frame.setResizable(false);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(logoImage);
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
 
+        JLabel label = new JLabel("HospiSys v1.0");
+        label.setFont(font);
 
-        // frame panels
-        JPanel usernamePanel = new JPanel();
-        JPanel passwordPanel = new JPanel();
-        JPanel loginButtonPanel = new JPanel();
+        // entries section panel
+        JPanel entriesPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints entriesGbc = new GridBagConstraints();
 
-        // labels and entry  boxes
-        TextField usernameEntry = new TextField(10);
-        TextField passwordEntry = new TextField(10);
+        // Username entry
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(font);
+        TextField usernameEntry = new TextField(20);
+        usernameEntry.setFont(font);
+        entriesGbc.gridx = 0;
+        entriesGbc.gridy = 0;
+        entriesPanel.add(usernameLabel, entriesGbc);
+        entriesGbc.gridx = 1;
+        entriesGbc.anchor = GridBagConstraints.WEST;
+        entriesPanel.add(usernameEntry, entriesGbc);
+
+        // Password entry
+        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel.setFont(font);
+        TextField passwordEntry = new TextField(20);
+        passwordEntry.setFont(font);
         passwordEntry.setEchoChar('*');
-
-        usernamePanel.add(new JLabel("Username:"));
-        usernamePanel.add(usernameEntry);
-
-        passwordPanel.add(new JLabel("Password:"));
-        passwordPanel.add(passwordEntry);
-
+        JButton viewPassword = new JButton("Show");
+        viewPassword.setFont(font);
+        viewPassword.addActionListener(e -> passwordEntry.setEchoChar((char)0));
+        entriesGbc.gridx = 0;
+        entriesGbc.gridy = 1;
+        entriesGbc.anchor = GridBagConstraints.CENTER;
+        entriesPanel.add(passwordLabel, entriesGbc);
+        entriesGbc.gridx = 1;
+        entriesGbc.anchor = GridBagConstraints.WEST;
+        entriesPanel.add(passwordEntry, entriesGbc);
+        entriesGbc.gridx = 2;
+        entriesPanel.add(viewPassword, entriesGbc);
 
         // login button
         JButton loginButton = new JButton("Login");
+        loginButton.setFont(font);
         loginButton.addActionListener(e -> {
             try {
                 login(usernameEntry.getText(), passwordEntry.getText(), frame);
@@ -62,17 +89,38 @@ public class HospiSys {
             }
         });
 
-        loginButtonPanel.add(loginButton);
+        // add logo
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 4;
+        frame.getContentPane().add(logo, gbc);
+
+        // add label
+        gbc.gridx = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 3;
+        frame.getContentPane().add(label, gbc);
 
 
-        // add panels to frame
-        frame.getContentPane().add(logo);
-        frame.getContentPane().add(usernamePanel);
-        frame.getContentPane().add(passwordPanel);
-        frame.getContentPane().add(loginButtonPanel);
+        // add username panel
+        gbc.gridy = 1;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 3;
+        frame.getContentPane().add(entriesPanel, gbc);
+
+        // add login button
+        gbc.gridy = 4;
+        gbc.gridx = 3;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        frame.getContentPane().add(loginButton, gbc);
 
         frame.setVisible(true);
+
+
+
     }
+
 
     // login function
     // verifies login details and opens menu
@@ -112,10 +160,10 @@ public class HospiSys {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
         frame.setResizable(false);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(logoImage);
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 200, Image.SCALE_FAST)));
 
 
         // frame panels
@@ -177,7 +225,7 @@ public class HospiSys {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(700, 400);
         frame.setResizable(false);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(logoImage);
 
         // search bar and criteria dropdown
         JPanel searchPanel = new JPanel();
@@ -257,7 +305,7 @@ public class HospiSys {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(480, 560);
         frame.setResizable(false);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(logoImage);
 
         // current profile photo
         JPanel profilePhotoPanel = new JPanel();
@@ -350,7 +398,7 @@ public class HospiSys {
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(725, 350);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(logoImage);
 
         GridBagConstraints gbc = new GridBagConstraints();
 

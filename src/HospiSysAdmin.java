@@ -48,7 +48,7 @@ public class HospiSysAdmin {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(725, 350);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(HospiSys.logoImage);
 
         JPanel buttonsPanel = new JPanel();
 
@@ -106,10 +106,10 @@ public class HospiSysAdmin {
         GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(640, 275);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(HospiSys.logoImage);
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 150, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
 
         // label
         JLabel label = new JLabel("Create new account:");
@@ -166,7 +166,7 @@ public class HospiSysAdmin {
 
         // save button
         JButton saveButton = new JButton("Save");
-        //saveButton.setFont(font);
+        saveButton.setFont(HospiSys.font);
         saveButton.addActionListener(e -> {
             if (passwordEntry.getText().equals(repeatPasswordEntry.getText())) {
                 try {

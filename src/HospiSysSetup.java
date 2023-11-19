@@ -13,8 +13,6 @@ import java.util.Comparator;
 // System setup class
 public class HospiSysSetup {
 
-    private static Font font = new Font(Font.DIALOG, Font.BOLD, 24);;
-
     // Setup admin screen
     // TODO: update to simply call 'createUser' in HospiSysAdmin
     private static void setupAdmin(String path) throws IOException {
@@ -25,14 +23,14 @@ public class HospiSysSetup {
         GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(640, 275);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(HospiSys.logoImage);
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 150, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
 
         // label
         JLabel label = new JLabel("Create admin account:");
-        label.setFont(font);
+        label.setFont(HospiSys.font);
 
         // entries section panel
         JPanel entriesPanel = new JPanel(new GridBagLayout());
@@ -79,7 +77,7 @@ public class HospiSysSetup {
 
         // save button
         JButton saveButton = new JButton("Save");
-        saveButton.setFont(font);
+        saveButton.setFont(HospiSys.font);
         saveButton.addActionListener(e -> {
             if (passwordEntry.getText().equals(repeatPasswordEntry.getText())) {
                 try {
@@ -182,10 +180,10 @@ public class HospiSysSetup {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(650, 260);
         frame.setResizable(false);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(HospiSys.logoImage);
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 150, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
 
         // Folder selection section
         JPanel chooseFolderPanel = new JPanel();
@@ -205,9 +203,8 @@ public class HospiSysSetup {
         chooseFolderPanel.add(changeDirectoryButton);
 
         JButton nextButton = new JButton("Next");
-        Font nextButtonFont = new Font(nextButton.getFont().getName(),nextButton.getFont().getStyle(),24);
 
-        nextButton.setFont(nextButtonFont);
+        nextButton.setFont(HospiSys.font);
         nextButton.addActionListener(e -> {
             try {
                 createFolders(jfc.getSelectedFile().getPath());
@@ -268,10 +265,10 @@ public class HospiSysSetup {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(450, 200);
         frame.setResizable(false);
-        frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+        frame.setIconImage(HospiSys.logoImage);
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 150, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
 
         JLabel label = new JLabel("HospiSys Setup");
 
@@ -279,9 +276,9 @@ public class HospiSysSetup {
         JButton begin = new JButton("Begin");
         JButton close = new JButton("Exit");
 
-        begin.setFont(font);
-        close.setFont(font);
-        label.setFont(font);
+        begin.setFont(HospiSys.font);
+        close.setFont(HospiSys.font);
+        label.setFont(HospiSys.font);
 
         begin.addActionListener(e -> {
             frame.dispose();
