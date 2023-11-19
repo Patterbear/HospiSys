@@ -21,10 +21,18 @@ public class HospiSysSetup {
         // Frame setup
         JFrame frame = new JFrame("HospiSys - Setup Admin");
         frame.setLocationRelativeTo(null);
-        frame.setLayout(new GridLayout(0, 1));
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(480, 450);
+        frame.setSize(640, 250);
         frame.setIconImage(new ImageIcon("img/logo.png").getImage());
+
+        // logo
+        JLabel logo = new JLabel(new ImageIcon(ImageIO.read(new File("img/logo.png")).getScaledInstance(200, 150, Image.SCALE_FAST)));
+
+        // label
+        JLabel label = new JLabel("Create admin account:");
+        label.setFont(font);
 
         // Username entry
         JPanel usernamePanel = new JPanel();
@@ -48,11 +56,12 @@ public class HospiSysSetup {
         repeatPasswordEntry.setEchoChar('*');
         JButton viewRepeatPassword = new JButton("Show");
         viewRepeatPassword.addActionListener(e -> repeatPasswordEntry.setEchoChar((char)0));
-        passwordPanel.add(new JLabel("Repeat password: "));
-        passwordPanel.add(repeatPasswordEntry);
-        passwordPanel.add(viewRepeatPassword);
+        repeatPasswordPanel.add(new JLabel("Repeat password: "));
+        repeatPasswordPanel.add(repeatPasswordEntry);
+        repeatPasswordPanel.add(viewRepeatPassword);
 
         JButton saveButton = new JButton("Save");
+        saveButton.setFont(font);
         saveButton.addActionListener(e -> {
             if (passwordEntry.getText().equals(repeatPasswordEntry.getText())) {
                 try {
@@ -76,10 +85,35 @@ public class HospiSysSetup {
 
         });
 
-        frame.getContentPane().add(usernamePanel);
-        frame.getContentPane().add(passwordPanel);
-        frame.getContentPane().add(repeatPasswordPanel);
-        frame.getContentPane().add(saveButton);
+        // add logo
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 4;
+        frame.getContentPane().add(logo, gbc);
+
+        // add label
+        gbc.gridx = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 3;
+        frame.getContentPane().add(label, gbc);
+
+        // add username panel
+        gbc.gridy = 1;
+        frame.getContentPane().add(usernamePanel, gbc);
+
+        // add password panel
+        gbc.gridy = 2;
+        frame.getContentPane().add(passwordPanel, gbc);
+
+        // add repeat password panel
+        gbc.gridy = 3;
+        frame.getContentPane().add(repeatPasswordPanel, gbc);
+
+        // add save button
+        gbc.gridy = 4;
+        gbc.gridx = 3;
+        gbc.gridwidth = 1;
+        frame.getContentPane().add(saveButton, gbc);
 
         frame.setVisible(true);
     }
@@ -103,7 +137,8 @@ public class HospiSysSetup {
         // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Select Install Location");
         frame.setLocationRelativeTo(null);
-        frame.getContentPane().setLayout(new MigLayout());
+        frame.getContentPane().setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(650, 260);
         frame.setResizable(false);
@@ -129,47 +164,47 @@ public class HospiSysSetup {
         chooseFolderPanel.add(directoryEntry);
         chooseFolderPanel.add(changeDirectoryButton);
 
-        // panel to display progress updates
-        JPanel statusPanel = new JPanel(new GridLayout(0, 1));
-
         JButton nextButton = new JButton("Next");
         Font nextButtonFont = new Font(nextButton.getFont().getName(),nextButton.getFont().getStyle(),24);
 
         nextButton.setFont(nextButtonFont);
         nextButton.addActionListener(e -> {
             createFolders(jfc.getSelectedFile().getPath());
-            statusPanel.add(new JLabel("- Folders created."));
-
             try {
                 createHSDs(jfc.getSelectedFile().getPath());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            statusPanel.add(new JLabel("- Database files created."));
 
-            statusPanel.revalidate();
-            statusPanel.repaint();
-
-            // change button function and text
-            nextButton.setText("Done");
-            nextButton.removeActionListener(nextButton.getActionListeners()[0]);
-            nextButton.addActionListener(e1 -> {
-                try {
-                    frame.dispose();
-                    setupAdmin(jfc.getSelectedFile().getPath());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-
-
+            try {
+                frame.dispose();
+                setupAdmin(jfc.getSelectedFile().getPath());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
+        // add logo
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 3;
+        frame.getContentPane().add(logo, gbc);
 
-        frame.getContentPane().add(logo);
-        frame.getContentPane().add(chooseFolderPanel, "wrap");
-        frame.getContentPane().add(statusPanel);
-        frame.getContentPane().add(nextButton, "span, align right");
+        // add label
+        gbc.gridx = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 3;
+        frame.getContentPane().add(new JLabel("Choose install location:"), gbc);
+
+        // add choose folder panel
+        gbc.gridy = 1;
+        frame.getContentPane().add(chooseFolderPanel, gbc);
+
+        // add next button
+        gbc.gridy = 2;
+        gbc.gridx = 3;
+        gbc.gridwidth = 1;
+        frame.getContentPane().add(nextButton, gbc);
 
         frame.setVisible(true);
 
