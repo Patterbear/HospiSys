@@ -184,7 +184,8 @@ public class HospiSysSetup {
         // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Setup");
         frame.setLocationRelativeTo(null);
-        frame.getContentPane().setLayout(new MigLayout());
+        frame.getContentPane().setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(450, 200);
         frame.setResizable(false);
@@ -212,16 +213,28 @@ public class HospiSysSetup {
             }
         });
         close.addActionListener(e -> frame.dispose());
-        buttonsPanel.add(begin);
         buttonsPanel.add(close);
+        buttonsPanel.add(begin);
 
-        frame.getContentPane().add(logo, "align center, span 3 3, wrap");
-        frame.getContentPane().add(label, "align center, span 2, wrap");
-        frame.getContentPane().add(close, "align left");
-        frame.getContentPane().add(begin, "align right");
+        // add logo
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 2;
+        frame.getContentPane().add(logo, gbc);
+
+        // add screen label
+        gbc.gridheight = 1;
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        frame.getContentPane().add(label, gbc);
+
+        // add buttons panel
+        gbc.gridy = 1;
+        frame.getContentPane().add(buttonsPanel, gbc);
 
         frame.setVisible(true);
     }
+
 
     // Main method
     public static void main(String[] args) throws IOException {
