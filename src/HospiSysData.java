@@ -31,6 +31,7 @@ public class HospiSysData {
             "Notes"
     };
 
+
     HospiSysData(String path) {
         this.file = new File(path);
     }
@@ -39,23 +40,100 @@ public class HospiSysData {
         return (int)Files.lines(file.toPath()).count();
     }
 
-
-    // Encrypt record method
-    // Playfair encrypts patient data ready for storing
-    // make private and not static
-    public static String[] encryptRecord(String[] record) {
-        String[] encryptedRecord = new String[record.length];
-        int[] ignore = {0, 3, 4, 5, 6, 7, 9, 10, 11};
-
-
-        for (int i = 0; i < record.length; i++) {
-            if(Arrays.binarySearch(ignore, i) < 0) {
-                encryptedRecord[i] = Playfair.encrypt(record[i], "systemkey"); // temp key
+    // Check if string contains only letters function
+    // used to determine if encrypt is needed
+    private static boolean isOnlyLetters(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if(!Character.isLetter(s.charAt(i))) {
+                return false;
             }
-
         }
 
+        return true;
+    }
+
+    // Function to separate letters from other characters
+    private static String[] segregateRecordSegment(String recordSegment) {
+        ArrayList<String> segregatedRecordSegment = new ArrayList<String>();
+        String segment = "";
+
+        for (int i = 0; i < recordSegment.length(); i++) {
+            // current char is  a letter, added to current segment
+            if (Character.isLetter(recordSegment.charAt(i))) {
+                segment += recordSegment.charAt(i);
+
+                // if final char is a letter, segment is added then loop terminated
+                if(i == recordSegment.length() - 1) {
+                    segregatedRecordSegment.add(segment);
+                    break;
+                }
+            } else { // non-letter found so segment and symbol added before segment resets
+                if (!segment.equals("")) { // prevents adding empty segment
+                    segregatedRecordSegment.add(segment);
+                    segment = "";
+                }
+                segregatedRecordSegment.add(String.valueOf(recordSegment.charAt(i)));
+            }
+        }
+
+        // although using '.length' is common, apparently '0' is more efficient with the JVM
+        return segregatedRecordSegment.toArray(new String[0]);
+    }
+
+    // Encrypt record method
+    // Playfair encrypts patient data ready for storing IF their account is authorised
+    // make private and not static
+    public static String[] encryptRecord(String[] record, String username, String password) throws FileNotFoundException {
+        String[] encryptedRecord = new String[record.length];
+        String key = HospiSysAdmin.requestSystemKey(username, password);
+        if (key == null) {
+            return null;
+        }
+
+        // calls method to segregate letter groups from symbols
+        for (int i = 0; i < record.length; i++) {
+            String[] segregatedRecord = segregateRecordSegment(record[i]);
+            String encryptedRecordSegment = "";
+            for(int j = 0; j < segregatedRecord.length; j++) {
+                if (isOnlyLetters(segregatedRecord[j])) {
+                    encryptedRecordSegment += Playfair.encrypt(segregatedRecord[j], key);
+                } else {
+                    encryptedRecordSegment += segregatedRecord[j];
+                }
+            }
+            encryptedRecord[i] = encryptedRecordSegment;
+        }
+
+        System.out.println(Arrays.toString(encryptedRecord));
+        System.out.println(Arrays.toString(decryptRecord(encryptedRecord, username, password)));
+
         return encryptedRecord;
+    }
+
+    // Decrypt record method
+    // Playfair decrypts patient data ready for viewing IF their account is authorised
+    public static String[] decryptRecord(String[] record, String username, String password) throws FileNotFoundException {
+        String[] decryptedRecord = new String[record.length];
+        String key = HospiSysAdmin.requestSystemKey(username, password);
+        if (key == null) {
+            return null;
+        }
+        // calls method to segregate letter groups from symbols
+        for (int i = 0; i < record.length; i++) {
+            String[] segregatedRecord = segregateRecordSegment(record[i]);
+            String decryptedRecordSegment = "";
+            for(int j = 0; j < segregatedRecord.length; j++) {
+                if (isOnlyLetters(segregatedRecord[j])) {
+                    decryptedRecordSegment += Playfair.decrypt(segregatedRecord[j], key);
+                } else {
+                    decryptedRecordSegment += segregatedRecord[j];
+                }
+            }
+            decryptedRecord[i] = decryptedRecordSegment;
+        }
+        
+        return decryptedRecord;
+
     }
 
     public String readAll() throws FileNotFoundException {
@@ -86,6 +164,7 @@ public class HospiSysData {
             }
         }
 
+
         return formatRecord(record);
     }
 
@@ -99,6 +178,8 @@ public class HospiSysData {
 
         while (scanner.hasNextLine()) {
             String[] record = formatRecord(scanner.nextLine());
+
+            encryptRecord(record, "a", "a"); // temporary use for testing
 
             if(term.equals("")) {
                 resultList.add(List.of(record));

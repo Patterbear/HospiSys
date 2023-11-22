@@ -1,6 +1,5 @@
 package src;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -9,11 +8,6 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class HospiSysAdmin {
-
-    // Key attribute
-    // used to encrypt/decrypt user data
-    private static String adminKey = "adminkeyexample";
-
 
     // Verify admin status function
     // checks whether a given username hash is in the admin hsd file
@@ -140,6 +134,7 @@ public class HospiSysAdmin {
                 passwordEntry.setEchoChar('*');
             }
         });
+
         entriesGbc.gridx = 0;
         entriesGbc.gridy = 1;
         entriesGbc.anchor = GridBagConstraints.CENTER;
@@ -242,4 +237,14 @@ public class HospiSysAdmin {
     }
 
 
+    // Give system key function
+    // returns system key if user is authorised
+    public static String requestSystemKey(String username, String password) throws FileNotFoundException {
+        if(new HospiSysData("dat/users.hsd").verifyUser(username, password)) {
+            return "systemkey";
+        } else {
+            return "";
+        }
+
+    }
 }
