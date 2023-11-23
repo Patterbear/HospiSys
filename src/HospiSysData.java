@@ -158,7 +158,7 @@ public class HospiSysData {
                     decryptedRecordSegment += segregatedRecord[j];
                 }
             }
-            decryptedRecord[i] = decryptedRecordSegment.replace("\\I", "J").replace("X\\", "").replace("Z\\", "");
+            decryptedRecord[i] = decryptedRecordSegment.replace("\\I", "J").replace("I\\", "J").replace("X\\", "").replace("Z\\", "");
         }
         
         return formatDecryptedRecord(decryptedRecord);
