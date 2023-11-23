@@ -129,7 +129,7 @@ public class HospiSys {
         // temporary access
         if(user.equals("") && password.equals("")) {
             frame.dispose();
-            menu();
+            menu(user, password);
             return;
         }
 
@@ -138,9 +138,9 @@ public class HospiSys {
         if(hsd.verifyUser(user, password)) {
             frame.dispose();
             if(verifyAdmin(Playfair.encrypt(user, password))) {
-                accessAdminInterface(Playfair.encrypt(user, password));
+                accessAdminInterface(user, password);
             } else {
-                menu();
+                menu(user, password);
             }
 
         } else {
@@ -152,7 +152,7 @@ public class HospiSys {
 
     // Menu function
     // opens menu screen
-    public static void menu() throws IOException {
+    public static void menu(String username, String password) throws IOException {
 
         // menu window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Menu");
@@ -175,7 +175,7 @@ public class HospiSys {
         JButton patientSearch = new JButton("Search");
         patientSearch.addActionListener(e -> {
             try {
-                search();
+                search(username, password);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -184,7 +184,7 @@ public class HospiSys {
         JButton addNewPatient = new JButton("Add New");
         addNewPatient.addActionListener(e -> {
             try {
-                addNew();
+                addNew(username, password);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -218,7 +218,7 @@ public class HospiSys {
 
     // Search patients screen
     // allows user to view records matching selected criteria
-    private static void search() throws IOException {
+    private static void search(String username, String password) throws IOException {
         // JFrame setup
         JFrame frame = new JFrame("HospiSys - Search");
         frame.setLocationRelativeTo(null);
@@ -250,6 +250,8 @@ public class HospiSys {
                 String[][] results = hsd.search(HospiSysData.patientLabels[criteriaDropdown.getSelectedIndex()], searchBar.getText());
                 for (int i = 0; i < results.length; i++) {
                     JPanel resultPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+                    results[i] = HospiSysData.decryptRecord(results[i], username, password);
 
                     // attributes for preview
                     resultPanel.add(new JLabel(results[i][0]));
@@ -293,7 +295,7 @@ public class HospiSys {
     }
 
     // Add record screen
-    private static void addNew() throws IOException {
+    private static void addNew(String username, String password) throws IOException {
         String[] labels = HospiSysData.patientLabels;
 
         HospiSysData hsd = new HospiSysData("dat/patients.hsd");
@@ -370,6 +372,12 @@ public class HospiSys {
             }
 
             try {
+                details = HospiSysData.encryptRecord(details, username, password);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            try {
                 hsd.writeRecord(details);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -378,7 +386,7 @@ public class HospiSys {
             frame.dispose();
             JOptionPane.showMessageDialog(null, "Patient created successfully.");
             try {
-                patientProfile(hsd.retrieve(hsd.nextId() - 1)); // opens newly created patient profile
+                patientProfile(HospiSysData.decryptRecord(hsd.retrieve(hsd.nextId() - 1), username, password)); // opens newly created patient profile
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

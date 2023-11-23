@@ -58,6 +58,8 @@ public class HospiSysData {
         String segment = "";
 
         for (int i = 0; i < recordSegment.length(); i++) {
+
+
             // current char is  a letter, added to current segment
             if (Character.isLetter(recordSegment.charAt(i))) {
                 segment += recordSegment.charAt(i);
@@ -103,11 +105,38 @@ public class HospiSysData {
             }
             encryptedRecord[i] = encryptedRecordSegment;
         }
-
-        System.out.println(Arrays.toString(encryptedRecord));
-        System.out.println(Arrays.toString(decryptRecord(encryptedRecord, username, password)));
-
         return encryptedRecord;
+    }
+
+
+    // Format decrypted record function
+    // makes fields originally in all caps more readable
+    // EXAMPLE: 'ADDRESS@EMAIL.COM' -> 'address@email.com'
+    private static String[] formatDecryptedRecord(String[] record) {
+        // field indexes that don't need formatting
+        int[] skip = {3, 4, 7, 8};
+
+
+        // capitalises the first letters of fields (also after space)
+        for (int i = 1; i < record.length; i++) {
+            if(Arrays.binarySearch(skip, i) < 0) {
+                String[] field = record[i].split(" ");
+                String formattedField = "";
+
+                for (int j = 0; j < field.length; j++) {
+                    formattedField += field[j].substring(0, 1) + field[j].substring(1).toLowerCase() + " ";
+                }
+                record[i] = formattedField.substring(0, formattedField.length() - 1);
+
+            }
+
+            // email address to lower case
+            record[8] = record[8].toLowerCase();
+
+        }
+
+
+        return record;
     }
 
     // Decrypt record method
@@ -129,10 +158,10 @@ public class HospiSysData {
                     decryptedRecordSegment += segregatedRecord[j];
                 }
             }
-            decryptedRecord[i] = decryptedRecordSegment;
+            decryptedRecord[i] = decryptedRecordSegment.replace("\\I", "J").replace("X\\", "").replace("Z\\", "");
         }
         
-        return decryptedRecord;
+        return formatDecryptedRecord(decryptedRecord);
 
     }
 
@@ -179,8 +208,6 @@ public class HospiSysData {
         while (scanner.hasNextLine()) {
             String[] record = formatRecord(scanner.nextLine());
 
-            encryptRecord(record, "a", "a"); // temporary use for testing
-
             if(term.equals("")) {
                 resultList.add(List.of(record));
             }
@@ -225,7 +252,7 @@ public class HospiSysData {
 
             user = scanner.nextLine();
             if (user.split("-")[0].equals(usernameHash)) {
-                result = user.split("-");
+                result = user.replace("\\", "").split("-");
                 break;
             }
         }
@@ -237,9 +264,11 @@ public class HospiSysData {
     // verifies whether the given username and password is valid
     // checks using Playfair encryption using given password as key
     public boolean verifyUser(String username, String password) throws FileNotFoundException {
-        String[] user = readUser(Playfair.encrypt(username, password));
+        String usernameHash = Playfair.encrypt(username, password).replace("\\", "");
+        String passwordHash = Playfair.encrypt(password, password).replace("\\", "");
+        String[] user = readUser(usernameHash);
 
-        if(Playfair.encrypt(username, password).equals(user[0]) && Playfair.encrypt(password, password).equals(user[1])) {
+        if(usernameHash.equals(user[0]) && passwordHash.equals(user[1])) {
             return true;
         }
         return false;

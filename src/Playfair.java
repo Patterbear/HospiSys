@@ -67,6 +67,10 @@ public class Playfair {
         System.out.println(output.substring(0, output.length() - 1)); // removes final new line
     }
 
+    private static String removeJs(String s) {
+        return s.replace("J", "I\\");
+    }
+
 
     // Playfair string formatting function
     // inserts spaces between character pairs
@@ -86,24 +90,28 @@ public class Playfair {
 
     // Playfair message formatting function
     private static char[] formatMessage(String message) {
-        char[] messageChars = message.toUpperCase().replace(" ", "").replace("J", "I").toCharArray();
+        char[] messageChars = message.toUpperCase().replace(" ", "").toCharArray();
+                //.replace("J", "I").toCharArray();
 
         String messageNoDuplicates = Character.toString(messageChars[0]);
 
         for(int i = 1; i < messageChars.length; i++) {
             if ((i + 1) % 2 == 0 && messageChars[i] == messageChars[i - 1]) {
-                messageNoDuplicates += "X";
+                //messageNoDuplicates += "X";
+                messageNoDuplicates += "X\\" + messageChars[i] + "X\\"; // double backslash indicates the character is a placeholder
+            } else {
+                messageNoDuplicates += messageChars[i];
             }
 
-            messageNoDuplicates += messageChars[i];
         }
 
         // add 'Z' to end if odd number of letters
         if (messageNoDuplicates.length() % 2 != 0) {
-            messageNoDuplicates += "Z";
+            //messageNoDuplicates += "Z";
+            messageNoDuplicates += "Z\\"; // double backslash indicates the character is a placeholder
         }
 
-        return messageNoDuplicates.toCharArray();
+        return removeJs(messageNoDuplicates).toCharArray();
 
     }
 
@@ -114,6 +122,8 @@ public class Playfair {
 
         // format key
         char[] keyChars = key.toUpperCase().replace("J", "I").toCharArray();
+        // swap '\' for '/' as '\' is used to indicate removable characters
+        message = message.replace("\\", "/");
 
         // generate grid and update message char array
         char[][] lettersGrid = generateGrid(keyChars);
@@ -124,7 +134,15 @@ public class Playfair {
 
         for (int i = 1; i < messageChars.length; i+=2) {
             int[] first = searchGrid(lettersGrid, messageChars[i - 1]);
+
+            // skips over character if it's a '\' followed by 'I'
+            if (messageChars[i] == '\\' && messageChars[i - 1] == 'I') {
+                result += "\\";
+                i++;
+            }
+
             int[] second = searchGrid(lettersGrid, messageChars[i]);
+
 
             // same row, shift right
             if (first[0] == second[0]) {
@@ -159,6 +177,15 @@ public class Playfair {
                 result += lettersGrid[first[0]][second[1]];
                 result += lettersGrid[second[0]][first[1]];
             }
+
+            // ensures '\' is skipped over in loop as it is just indicator that character can be removed during decrypt
+            if(messageChars[i] == 'X' || messageChars[i] == 'Z' || messageChars[i] == 'I') {
+                if(messageChars[i + 1] == '\\') {
+                    result += '\\';
+                    i++;
+                }
+            }
+
         }
         return result;
     }

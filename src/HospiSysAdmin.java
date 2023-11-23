@@ -15,6 +15,8 @@ public class HospiSysAdmin {
         Scanner scanner = new Scanner(new File("dat/admin.hsd"));
         String record;
 
+        usernameHash = usernameHash.replace("\\", "");
+
         while (scanner.hasNextLine()) {
             record = scanner.nextLine();
             if (record.equals(usernameHash)) {
@@ -26,15 +28,15 @@ public class HospiSysAdmin {
 
     // Admin interface access method
     // permits entry to verified admins
-    public static void accessAdminInterface(String usernameHash) throws FileNotFoundException {
-        if(verifyAdmin(usernameHash)) {
-            adminInterface();
+    public static void accessAdminInterface(String username, String password) throws FileNotFoundException {
+        if(verifyAdmin(Playfair.encrypt(username, password))) {
+            adminInterface(username, password);
         }
     }
 
     // Admin interface method
     // GUI that allows the user to add new users
-    private static void adminInterface() {
+    private static void adminInterface(String username, String password) {
 
         // Frame setup
         JFrame frame = new JFrame("HospiSys - Admin Interface");
@@ -60,7 +62,7 @@ public class HospiSysAdmin {
         staffInterfaceButton.addActionListener(e -> {
             frame.dispose();
             try {
-                HospiSys.menu();
+                HospiSys.menu(username, password);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
