@@ -199,9 +199,11 @@ public class HospiSysData {
 
     // Record search function
     // returns a list of records matching the given search parameters
-    public String[][] search(String category, String term) throws FileNotFoundException {
+    public String[][] search(String category, String term, String username, String password) throws FileNotFoundException {
         int field = Arrays.asList(patientLabels).indexOf(category);
         List<List<String>> resultList = new ArrayList<List<String>>();
+
+        term = Playfair.encrypt(term, HospiSysAdmin.requestSystemKey(username, password)).toUpperCase();
 
         Scanner scanner = new Scanner(file);
 

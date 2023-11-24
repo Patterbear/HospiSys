@@ -118,6 +118,10 @@ public class HospiSys {
         gbc.gridwidth = 1;
         frame.getContentPane().add(loginButton, gbc);
 
+        // temporary
+        usernameEntry.setText("a");
+        passwordEntry.setText("a");
+
         frame.setVisible(true);
 
     }
@@ -126,12 +130,6 @@ public class HospiSys {
     // login function
     // verifies login details and opens menu
     private static void login(String user, String password, JFrame frame) throws IOException {
-        // temporary access
-        if(user.equals("") && password.equals("")) {
-            frame.dispose();
-            menu(user, password);
-            return;
-        }
 
         HospiSysData hsd = new HospiSysData("dat/users.hsd");
 
@@ -247,7 +245,7 @@ public class HospiSys {
         searchButton.addActionListener(e -> {
             resultsPanel.removeAll();
             try {
-                String[][] results = hsd.search(HospiSysData.patientLabels[criteriaDropdown.getSelectedIndex()], searchBar.getText());
+                String[][] results = hsd.search(HospiSysData.patientLabels[criteriaDropdown.getSelectedIndex()], searchBar.getText(), username, password);
                 for (int i = 0; i < results.length; i++) {
                     JPanel resultPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
