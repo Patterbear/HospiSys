@@ -87,6 +87,16 @@ public class HospiSys {
         entriesGbc.insets = new Insets(10, 10, 10, 10);
         entriesPanel.add(viewPassword, entriesGbc);
 
+        // bottom buttons panel
+        JPanel bottomButtonsPanel = new JPanel();
+
+        // exit button
+        JButton exitButton = new JButton("Exit");
+        exitButton.setFont(font);
+        exitButton.addActionListener(e -> frame.dispose());
+        bottomButtonsPanel.add(exitButton);
+
+
         // login button
         JButton loginButton = new JButton("Login");
         loginButton.setFont(font);
@@ -97,6 +107,7 @@ public class HospiSys {
                 throw new RuntimeException(ex);
             }
         });
+        bottomButtonsPanel.add(loginButton);
 
         // add logo
         gbc.gridx = 0;
@@ -110,13 +121,13 @@ public class HospiSys {
         gbc.gridwidth = 3;
         frame.getContentPane().add(entriesPanel, gbc);
 
-        // add login button
+        // add login and exit buttons
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridy = 3;
-        gbc.gridx = 2;
+        gbc.gridx = 1;
         gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        frame.getContentPane().add(loginButton, gbc);
+        gbc.gridwidth = 2;
+        frame.getContentPane().add(bottomButtonsPanel, gbc);
 
         // temporary
         usernameEntry.setText("a");
@@ -143,7 +154,6 @@ public class HospiSys {
 
         } else {
             JOptionPane.showMessageDialog(null, "Incorrect Login");
-            // hsd.writeUser(user, password);
         }
 
     }
@@ -155,9 +165,11 @@ public class HospiSys {
         // menu window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Menu");
         frame.setLocationRelativeTo(null);
-        frame.getContentPane().setLayout(new GridLayout(0, 1));
+        //frame.getContentPane().setLayout(new GridLayout(0, 1));
+        frame.getContentPane().setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
+        frame.setSize(350, 350);
         frame.setResizable(false);
         frame.setIconImage(logoImage);
 
@@ -165,12 +177,9 @@ public class HospiSys {
         JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 200, Image.SCALE_FAST)));
 
 
-        // frame panels
-        JPanel patientPanel = new JPanel();
-        JPanel logoutButtonPanel = new JPanel();
-
         // buttons
         JButton patientSearch = new JButton("Search");
+        patientSearch.setFont(font);
         patientSearch.addActionListener(e -> {
             try {
                 search(username, password);
@@ -179,7 +188,8 @@ public class HospiSys {
             }
         });
 
-        JButton addNewPatient = new JButton("Add New");
+        JButton addNewPatient = new JButton("New Patient");
+        addNewPatient.setFont(font);
         addNewPatient.addActionListener(e -> {
             try {
                 addNew(username, password);
@@ -189,6 +199,7 @@ public class HospiSys {
         });
 
         JButton logout = new JButton("Log Out");
+        logout.setFont(font);
         logout.addActionListener(e -> {
             frame.dispose();
             try {
@@ -198,17 +209,28 @@ public class HospiSys {
             }
         });
 
-        // add components to panels
-        patientPanel.add(new JLabel("Patients"));
-        patientPanel.add(patientSearch);
-        patientPanel.add(addNewPatient);
+        // add logo
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        frame.getContentPane().add(logo, gbc);
 
-        logoutButtonPanel.add(logout);
+        // add search button
+        gbc.insets = new Insets(0, 0, 10, 10);
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        frame.getContentPane().add(patientSearch, gbc);
 
-        // add panels to frame
-        frame.getContentPane().add(logo);
-        frame.getContentPane().add(patientPanel);
-        frame.getContentPane().add(logoutButtonPanel);
+        // add new patient button
+        gbc.insets = new Insets(0, 0, 10, 0);
+        gbc.gridx = 1;
+        frame.getContentPane().add(addNewPatient, gbc);
+
+        // add log out button
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        frame.getContentPane().add(logout, gbc);
 
         frame.setVisible(true);
 

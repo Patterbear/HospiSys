@@ -203,14 +203,18 @@ public class HospiSysData {
         int field = Arrays.asList(patientLabels).indexOf(category);
         List<List<String>> resultList = new ArrayList<List<String>>();
 
-        term = Playfair.encrypt(term, HospiSysAdmin.requestSystemKey(username, password)).toUpperCase();
+        // prevents attempted encryption of empty string
+        if(!term.equals("")) {
+            term = Playfair.encrypt(term, HospiSysAdmin.requestSystemKey(username, password)).toUpperCase();
+        }
+
 
         Scanner scanner = new Scanner(file);
 
         while (scanner.hasNextLine()) {
             String[] record = formatRecord(scanner.nextLine());
 
-            if(term.equals("")) {
+            if(term.equals("*")) {
                 resultList.add(List.of(record));
             }
 
