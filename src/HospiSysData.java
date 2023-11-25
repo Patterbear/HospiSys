@@ -203,8 +203,8 @@ public class HospiSysData {
         int field = Arrays.asList(patientLabels).indexOf(category);
         List<List<String>> resultList = new ArrayList<List<String>>();
 
-        // prevents attempted encryption of empty string
-        if(!term.equals("")) {
+        // prevents attempted encryption of empty string or '*' wildcard
+        if(!term.equals("") && !term.equals("*")) {
             term = Playfair.encrypt(term, HospiSysAdmin.requestSystemKey(username, password)).toUpperCase();
         }
 
