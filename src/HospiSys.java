@@ -18,7 +18,6 @@ import static src.HospiSysAdmin.verifyAdmin;
 // Main class
 public class HospiSys {
 
-
     public static Image logoImage = new ImageIcon("img/logo.png").getImage();
 
     public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);
@@ -164,22 +163,18 @@ public class HospiSys {
 
         // menu window JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - Menu");
-        frame.setLocationRelativeTo(null);
-        //frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(350, 350);
+        frame.setSize(300,300);
         frame.setResizable(false);
         frame.setIconImage(logoImage);
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 200, Image.SCALE_FAST)));
-
+        JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
 
         // buttons
-        JButton patientSearch = new JButton("Search");
-        patientSearch.setFont(font);
+        JButton patientSearch = new JButton("Search Patients");
         patientSearch.addActionListener(e -> {
             try {
                 search(username, password);
@@ -189,7 +184,6 @@ public class HospiSys {
         });
 
         JButton addNewPatient = new JButton("New Patient");
-        addNewPatient.setFont(font);
         addNewPatient.addActionListener(e -> {
             try {
                 addNew(username, password);
@@ -241,7 +235,6 @@ public class HospiSys {
     private static void search(String username, String password) throws IOException {
         // JFrame setup
         JFrame frame = new JFrame("HospiSys - Search");
-        frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(new GridLayout(0, 1));
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(700, 400);
@@ -322,9 +315,6 @@ public class HospiSys {
 
         // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - New Patient");
-        frame.setLocationRelativeTo(null);
-        //frame.getContentPane().setLayout(new GridLayout(0, 1));
-        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(480, 560);
         frame.setResizable(false);
@@ -423,7 +413,6 @@ public class HospiSys {
     private static void patientProfile(String[] patient) throws IOException {
 
         JFrame frame = new JFrame("HospiSys - " + patient[1] + " " + patient[2] + " (" + patient[3] + ")");
-        frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(725, 350);

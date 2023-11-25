@@ -41,7 +41,6 @@ public class HospiSysAdmin {
         // Frame setup
         JFrame frame = new JFrame("HospiSys - Admin Interface");
         frame.setLayout(new GridLayout(0, 1));
-        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(725, 350);
         frame.setIconImage(HospiSys.logoImage);
@@ -97,7 +96,6 @@ public class HospiSysAdmin {
     private static void newUser() throws IOException {
         // Frame setup
         JFrame frame = new JFrame("HospiSys - Create New User");
-        frame.setLocationRelativeTo(null);
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
