@@ -316,13 +316,16 @@ public class HospiSys {
         // JFrame initialisation and configurations
         JFrame frame = new JFrame("HospiSys - New Patient");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(480, 560);
+        frame.setSize(480, 630);
         frame.setResizable(false);
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         frame.setIconImage(logoImage);
 
         // current profile photo
-        JPanel profilePhotoPanel = new JPanel();
         JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/0.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
+        gbc.gridwidth = 2;
+        frame.getContentPane().add(profilePhoto, gbc);
 
         // profile photo selection
         JButton uploadButton = new JButton("Upload");
@@ -339,27 +342,32 @@ public class HospiSys {
             }
         });
 
-        profilePhotoPanel.add(profilePhoto);
-        profilePhotoPanel.add(uploadButton);
-        frame.getContentPane().add(profilePhotoPanel, BorderLayout.PAGE_START);
+        gbc.insets = new Insets(5, 0, 5, 0);
+        gbc.gridy = 1;
+        frame.getContentPane().add(uploadButton, gbc);
 
+        // labels and corresponding text entries
         TextField[] textFields = new TextField[labels.length - 1]; // id is auto generated so is excluded
-        JPanel mainPanel = new JPanel(new GridLayout(0, 1));
+
+        // reset necessary constraints
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
 
         for (int i = 0; i < textFields.length; i++) {
-            JPanel labelPanel = new JPanel();
-            labelPanel.setLayout(new BorderLayout());
             TextField field = new TextField(20);
 
             textFields[i] = field;
 
-            labelPanel.add(new JLabel(" " + labels[i + 1] + ": "), BorderLayout.LINE_START);
-            labelPanel.add(field, BorderLayout.CENTER);
+            gbc.gridy = i + 2;
+            gbc.gridx = 0;
+            frame.getContentPane().add(new JLabel(" " + labels[i + 1] + ": "), gbc);
 
-            mainPanel.add(labelPanel, BorderLayout.CENTER);
+            gbc.gridx = 1;
+            frame.getContentPane().add(field, gbc);
         }
 
         JButton saveButton = new JButton("Save");
+        saveButton.setFont(font);
         saveButton.addActionListener(e -> {
             // saving uploaded profile image
             try {
@@ -402,8 +410,12 @@ public class HospiSys {
             }
         });
 
-        mainPanel.add(saveButton, BorderLayout.CENTER);
-        frame.getContentPane().add(mainPanel);
+        // add save button below
+        gbc.gridx = 0;
+        gbc.gridy = labels.length + 1;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(5, 0, 0, 0);
+        frame.getContentPane().add(saveButton, gbc);
 
         frame.setVisible(true);
 
