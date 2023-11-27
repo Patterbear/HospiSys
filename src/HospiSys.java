@@ -419,10 +419,17 @@ public class HospiSys {
 
     }
 
+    private static void deletePatientDialogue(int id) {
+
+    }
+
+    private static void editPatient(int id) {
+    }
+
+
     // Patient profile screen
     private static void patientProfile(String[] patient) throws IOException {
-
-        JFrame frame = buildScreen(patient[1] + " " + patient[2] + " (" + patient[3] + ")", 725, 350, false);
+        JFrame frame = buildScreen(patient[1] + " " + patient[2] + " (" + patient[3] + ")", 800, 325, false);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -430,55 +437,63 @@ public class HospiSys {
 
         // Profile picture
         JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/" + patient[0] +".png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
-        profilePhoto.setBorder(new EmptyBorder(20,0,0,0));
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // add profile photo
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridheight = 3;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 13;
+        gbc.insets = new Insets(0, 10, 0, 10);
+
         frame.getContentPane().add(profilePhoto, gbc);
 
-        // Patient details
-        JPanel patientDetailsPanel = new JPanel(new GridLayout(labels.length, 0));
-        patientDetailsPanel.setBorder(new EmptyBorder(10,0,0,0));
+        // patient labels and details immediatley to the right of image
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.gridx = 2;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        for (int i = 0; i < patient.length; i++) {
+            gbc.gridy = i;
+            gbc.anchor = GridBagConstraints.WEST;
+            frame.getContentPane().add(new JLabel(labels[i] + ": "), gbc);
+            gbc.gridx++;
+            frame.getContentPane().add(new JLabel(patient[i]), gbc);
+            gbc.gridx--;
 
-        for (int i = 0; i < labels.length; i++) {
-            patientDetailsPanel.add(new JLabel("    " + labels[i] + ": " + patient[i]));
         }
 
-        gbc.gridx = 1;
-        gbc.gridheight = 3;
-        gbc.gridwidth = 2;
-        frame.getContentPane().add(patientDetailsPanel, gbc);
+        // button panel
+        JPanel buttons = new JPanel();
 
-        // Edit and Delete Buttons
-        JPanel buttonsPanel = new JPanel();
-
-        JButton editButton = new JButton("Edit");
+        // delete button
         JButton deleteButton = new JButton("Delete");
+        deleteButton.setFont(font);
+        deleteButton.addActionListener(e -> deletePatientDialogue(Integer.parseInt(patient[0])));
 
+        // edit button
+        JButton editButton = new JButton("Edit");
+        editButton.setFont(font);
+        editButton.addActionListener(e -> editPatient(Integer.parseInt(patient[0])));
 
-        buttonsPanel.add(editButton);
-        buttonsPanel.add(deleteButton);
-
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 3;
-        gbc.gridheight = 1;
-
-        frame.getContentPane().add(buttonsPanel, gbc);
-
-        // Done button
+        // done button
         JButton doneButton = new JButton("Done");
+        doneButton.setFont(font);
         doneButton.addActionListener(e -> frame.dispose());
 
 
-        gbc.gridy = 4;
-
-        frame.getContentPane().add(doneButton, gbc);
+        // adding buttons
+        buttons.add(deleteButton);
+        buttons.add(editButton);
+        buttons.add(doneButton);
+        gbc.gridx = 2;
+        gbc.gridy++;
+        gbc.gridwidth = 4;
+        gbc.insets = new Insets(5, 5, 0, 5);
+        frame.getContentPane().add(buttons, gbc);
 
 
         frame.setVisible(true);
+
     }
 
 
@@ -488,4 +503,5 @@ public class HospiSys {
 
         start();
     }
+
 }
