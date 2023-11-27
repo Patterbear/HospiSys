@@ -447,7 +447,7 @@ public class HospiSys {
 
         frame.getContentPane().add(profilePhoto, gbc);
 
-        // patient labels and details immediatley to the right of image
+        // patient labels and details immediately to the right of image
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.gridx = 2;
