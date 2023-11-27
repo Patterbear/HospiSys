@@ -1,6 +1,5 @@
 package src;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -10,20 +9,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 
+
 // System setup class
 public class HospiSysSetup {
 
     // Setup admin screen
-    // TODO: update to simply call 'createUser' in HospiSysAdmin
     private static void setupAdmin(String path) throws IOException {
         // Frame setup
-        JFrame frame = new JFrame("HospiSys - Setup Admin");
-        frame.setLocationRelativeTo(null);
+        JFrame frame = HospiSys.buildScreen("Setup Admin", 640, 275, false);
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(640, 275);
-        frame.setIconImage(HospiSys.logoImage);
 
         // logo
         JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
@@ -173,14 +168,9 @@ public class HospiSysSetup {
     // Install directory selection screen
     private static void selectDirectory() throws IOException {
         // JFrame initialisation and configurations
-        JFrame frame = new JFrame("HospiSys - Select Install Location");
-        frame.setLocationRelativeTo(null);
+        JFrame frame = HospiSys.buildScreen("Select Install Location", 650, 260, true);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(650, 260);
-        frame.setResizable(false);
-        frame.setIconImage(HospiSys.logoImage);
 
         // logo
         JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
@@ -258,14 +248,9 @@ public class HospiSysSetup {
     private static void start() throws IOException {
 
         // JFrame initialisation and configurations
-        JFrame frame = new JFrame("HospiSys - Setup");
-        frame.setLocationRelativeTo(null);
+        JFrame frame = HospiSys.buildScreen("Setup", 450, 200, true);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(450, 200);
-        frame.setResizable(false);
-        frame.setIconImage(HospiSys.logoImage);
 
         // logo
         JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));

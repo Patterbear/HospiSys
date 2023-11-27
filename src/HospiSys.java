@@ -23,17 +23,29 @@ public class HospiSys {
     public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);
 
 
+    // Build screen function
+    // creates a JFrame with some standard configurations
+    public static JFrame buildScreen(String title, int width, int height, boolean exit) {
+        JFrame frame = new JFrame("HospiSys - " + title);
+        frame.setSize(width, height);
+        frame.setIconImage(logoImage);
+        frame.setResizable(false);
+        if(exit) {
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        } else {
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
+
+        return frame;
+    }
+
     // 'Start' method
     // creates the initial login screen
     public static void start() throws IOException {
         // login window JFrame initialisation and configurations
-        JFrame frame = new JFrame("HospiSys - Login");
+        JFrame frame = buildScreen("Login", 700, 350, true);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(700, 350);
-        frame.setResizable(false);
-        frame.setIconImage(logoImage);
 
         // logo
         JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
@@ -162,13 +174,9 @@ public class HospiSys {
     public static void menu(String username, String password) throws IOException {
 
         // menu window JFrame initialisation and configurations
-        JFrame frame = new JFrame("HospiSys - Menu");
+        JFrame frame = buildScreen("Menu", 300, 300, true);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300,300);
-        frame.setResizable(false);
-        frame.setIconImage(logoImage);
 
         // logo
         JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
@@ -233,13 +241,9 @@ public class HospiSys {
     // Search patients screen
     // allows user to view records matching selected criteria
     private static void search(String username, String password) throws IOException {
-        // JFrame setup
-        JFrame frame = new JFrame("HospiSys - Search");
+        // JFrame setup;
+        JFrame frame = buildScreen("Search", 700, 400, false);
         frame.getContentPane().setLayout(new GridLayout(0, 1));
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(700, 400);
-        frame.setResizable(false);
-        frame.setIconImage(logoImage);
 
         // search bar and criteria dropdown
         JPanel searchPanel = new JPanel();
@@ -314,13 +318,9 @@ public class HospiSys {
         HospiSysData hsd = new HospiSysData("dat/patients.hsd");
 
         // JFrame initialisation and configurations
-        JFrame frame = new JFrame("HospiSys - New Patient");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(480, 630);
-        frame.setResizable(false);
+        JFrame frame = buildScreen("New Patient", 480, 630, false);
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        frame.setIconImage(logoImage);
 
         // current profile photo
         JLabel profilePhoto = new JLabel(new ImageIcon(ImageIO.read(new File("img/0.png")).getScaledInstance(200, 200, Image.SCALE_FAST)));
@@ -424,12 +424,8 @@ public class HospiSys {
     // Patient profile screen
     private static void patientProfile(String[] patient) throws IOException {
 
-        JFrame frame = new JFrame("HospiSys - " + patient[1] + " " + patient[2] + " (" + patient[3] + ")");
+        JFrame frame = buildScreen(patient[1] + " " + patient[2] + " (" + patient[3] + ")", 725, 350, false);
         frame.getContentPane().setLayout(new GridBagLayout());
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(725, 350);
-        frame.setIconImage(logoImage);
-
         GridBagConstraints gbc = new GridBagConstraints();
 
         String[] labels = HospiSysData.patientLabels;

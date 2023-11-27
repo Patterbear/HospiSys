@@ -39,11 +39,8 @@ public class HospiSysAdmin {
     private static void adminInterface(String username, String password) {
 
         // Frame setup
-        JFrame frame = new JFrame("HospiSys - Admin Interface");
+        JFrame frame = HospiSys.buildScreen("Admin Interface", 725, 350, true);
         frame.setLayout(new GridLayout(0, 1));
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(725, 350);
-        frame.setIconImage(HospiSys.logoImage);
 
         JPanel buttonsPanel = new JPanel();
 
@@ -95,12 +92,9 @@ public class HospiSysAdmin {
     // allows assignment of admin status
     private static void newUser() throws IOException {
         // Frame setup
-        JFrame frame = new JFrame("HospiSys - Create New User");
+        JFrame frame = HospiSys.buildScreen("Create New User", 640, 275, false);
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(640, 275);
-        frame.setIconImage(HospiSys.logoImage);
 
         // logo
         JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
