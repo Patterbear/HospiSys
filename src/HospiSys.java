@@ -12,8 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import static src.HospiSysAdmin.accessAdminInterface;
-import static src.HospiSysAdmin.verifyAdmin;
 
 // Main class
 public class HospiSys {
@@ -157,8 +155,8 @@ public class HospiSys {
 
         if(hsd.verifyUser(user, password)) {
             frame.dispose();
-            if(verifyAdmin(Playfair.encrypt(user, password))) {
-                accessAdminInterface(user, password);
+            if(HospiSysAdmin.verifyAdmin(Playfair.encrypt(user, password))) {
+                HospiSysAdmin.accessAdminInterface(user, password);
             } else {
                 menu(user, password);
             }
