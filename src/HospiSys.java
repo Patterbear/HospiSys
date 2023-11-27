@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 
 // Main class
@@ -279,7 +280,7 @@ public class HospiSys {
                     int finalI = i;
                     viewButton.addActionListener(e1 -> {
                         try {
-                            patientProfile(results[finalI]);
+                            patientProfile(results[finalI], username, password);
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -402,7 +403,7 @@ public class HospiSys {
             frame.dispose();
             JOptionPane.showMessageDialog(null, "Patient created successfully.");
             try {
-                patientProfile(HospiSysData.decryptRecord(hsd.retrieve(hsd.nextId() - 1), username, password)); // opens newly created patient profile
+                patientProfile(HospiSysData.decryptRecord(hsd.retrieve(hsd.nextId() - 1), username, password), username, password); // opens newly created patient profile
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -419,16 +420,64 @@ public class HospiSys {
 
     }
 
-    private static void deletePatientDialogue(int id) {
 
-    }
+    // Edit patient screen
+    // allows user to edit patient details
+    private static void editPatient(int id, String username, String password, JFrame parent, HospiSysData hsd) {
+        JFrame frame = buildScreen("Edit Data", 400, 210, false);
+        frame.setLayout(new GridLayout(0, 1));
 
-    private static void editPatient(int id) {
+        // fields to de displayed in dropdown (id excluded)
+        String[] fields = Arrays.copyOfRange(HospiSysData.patientLabels, 1, HospiSysData.patientLabels.length);
+
+        JLabel label = new JLabel("Choose field to edit");
+        label.setFont(font);
+        label.setBorder(new EmptyBorder(0,40,0,0));
+
+        JPanel fieldEditPanel = new JPanel();
+        TextField dataEntry = new TextField(20);
+        JComboBox fieldDropdown = new JComboBox(fields);
+
+        fieldEditPanel.add(dataEntry);
+        fieldEditPanel.add(fieldDropdown);
+
+        // buttons
+        JPanel buttonsPanel = new JPanel();
+        JButton back = new JButton("Back");
+        back.setFont(font);
+        back.addActionListener(e -> frame.dispose());
+
+        JButton save = new JButton("Save");
+        save.setFont(font);
+        save.addActionListener(e -> {
+            try {
+                String newData = dataEntry.getText();
+                new HospiSysData("dat/patients.hsd").editPatient(id, fieldDropdown.getSelectedIndex() + 1, newData);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            frame.dispose();
+            parent.dispose();
+            try {
+                patientProfile(HospiSysData.decryptRecord(hsd.retrieve(id), username, password), username, password);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        buttonsPanel.add(back);
+        buttonsPanel.add(save);
+
+        frame.getContentPane().add(label);
+        frame.getContentPane().add(fieldEditPanel);
+        frame.getContentPane().add(buttonsPanel);
+
+        frame.setVisible(true);
     }
 
 
     // Patient profile screen
-    private static void patientProfile(String[] patient) throws IOException {
+    private static void patientProfile(String[] patient, String username, String password) throws IOException {
         JFrame frame = buildScreen(patient[1] + " " + patient[2] + " (" + patient[3] + ")", 800, 325, false);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -468,12 +517,27 @@ public class HospiSys {
         // delete button
         JButton deleteButton = new JButton("Delete");
         deleteButton.setFont(font);
-        deleteButton.addActionListener(e -> deletePatientDialogue(Integer.parseInt(patient[0])));
+        deleteButton.addActionListener(e -> {
+            // pop up gives the user option to delete patient
+            int choice = JOptionPane.showConfirmDialog(null,
+                    "Are you sure you want to delete this patient?",
+                    "Delete Patient",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if(choice == JOptionPane.YES_OPTION) {
+                HospiSysData hsd = new HospiSysData("dat/patients.hsd");
+                try {
+                    hsd.deletePatient(Integer.parseInt(patient[0]), HospiSysAdmin.requestSystemKey(username, password));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                frame.dispose();
+            }
+        });
 
         // edit button
         JButton editButton = new JButton("Edit");
         editButton.setFont(font);
-        editButton.addActionListener(e -> editPatient(Integer.parseInt(patient[0])));
+        editButton.addActionListener(e -> editPatient(Integer.parseInt(patient[0]), username, password, frame, new HospiSysData("dat/patients.hsd")));
 
         // done button
         JButton doneButton = new JButton("Done");

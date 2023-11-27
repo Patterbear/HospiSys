@@ -20,9 +20,12 @@ public class HospiSysAdmin {
         while (scanner.hasNextLine()) {
             record = scanner.nextLine();
             if (record.equals(usernameHash)) {
+                scanner.close();
                 return true;
             }
         }
+
+        scanner.close();
         return false;
     }
 
@@ -224,7 +227,6 @@ public class HospiSysAdmin {
         gbc.gridy = 5;
         gbc.gridx = 3;
         gbc.gridwidth = 1;
-        //gbc.gridheight = 1;
         frame.getContentPane().add(saveButton, gbc);
 
         frame.setVisible(true);

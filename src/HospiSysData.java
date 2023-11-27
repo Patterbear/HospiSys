@@ -1,9 +1,8 @@
 package src;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.Scanner;
 
 public class HospiSysData {
 
-    private final File file;
+     private final File file;
 
     public static String[] patientLabels = {
             "HospiSys ID",
@@ -34,6 +33,34 @@ public class HospiSysData {
 
     HospiSysData(String path) {
         this.file = new File(path);
+    }
+
+    // Patient record deletion method
+    // overwrites patient data with backslash values indicating it can be written over
+    public void deletePatient(int id, String key) throws IOException {
+        for(int i = 1; i < patientLabels.length; i++) {
+            editPatient(id, i, "\\");
+        }
+    }
+
+    // Patient detail edit function
+    // replaces a chosen field with new data
+    public void editPatient(int id, int fieldNumber, String newData) throws IOException {
+        List<String> contents = new ArrayList<>(Files.readAllLines(file.toPath(), StandardCharsets.UTF_8));
+        String[] record = HospiSysData.decryptRecord(contents.get(id).split("-"), "a", "a");
+        record[fieldNumber] = newData;
+
+        record = HospiSysData.encryptRecord(record, "a", "a");
+
+        String recordString = Integer.toString(id);
+
+        for (int i = 1; i < record.length; i++) {
+            recordString += "-" + record[i];
+        }
+        contents.set(id, recordString);
+
+        Files.write(file.toPath(), contents, StandardCharsets.UTF_8);
+
     }
 
     public int nextId() throws IOException {
@@ -214,6 +241,11 @@ public class HospiSysData {
         while (scanner.hasNextLine()) {
             String[] record = formatRecord(scanner.nextLine());
 
+            // ignores 'deleted' records
+            if(record[1].equals("\\")) {
+                continue;
+            }
+
             if(term.equals("*")) {
                 resultList.add(List.of(record));
             }
@@ -250,7 +282,7 @@ public class HospiSysData {
     // Read user function
     // returns a user record if given username hash exists in file
     private String[] readUser(String usernameHash) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
+        Scanner scanner = new Scanner(new File("dat/users.hsd"));
         String user;
         String[] result = new String[1];
 
@@ -262,6 +294,8 @@ public class HospiSysData {
                 break;
             }
         }
+
+        scanner.close();
 
         return result;
     }
