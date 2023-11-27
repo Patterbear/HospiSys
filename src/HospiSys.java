@@ -280,7 +280,7 @@ public class HospiSys {
                     int finalI = i;
                     viewButton.addActionListener(e1 -> {
                         try {
-                            patientProfile(results[finalI], username, password);
+                            patientProfile(results[finalI], username, password, searchButton);
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -423,7 +423,7 @@ public class HospiSys {
 
     // Edit patient screen
     // allows user to edit patient details
-    private static void editPatient(int id, String username, String password, JFrame parent, HospiSysData hsd) {
+    private static void editPatient(int id, String username, String password, JFrame parent, HospiSysData hsd, JButton... searchButton) {
         JFrame frame = buildScreen("Edit Data", 400, 210, false);
         frame.setLayout(new GridLayout(0, 1));
 
@@ -477,7 +477,7 @@ public class HospiSys {
 
 
     // Patient profile screen
-    private static void patientProfile(String[] patient, String username, String password) throws IOException {
+    private static void patientProfile(String[] patient, String username, String password, JButton... searchButton) throws IOException {
         JFrame frame = buildScreen(patient[1] + " " + patient[2] + " (" + patient[3] + ")", 800, 325, false);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -527,6 +527,11 @@ public class HospiSys {
                 HospiSysData hsd = new HospiSysData("dat/patients.hsd");
                 try {
                     hsd.deletePatient(Integer.parseInt(patient[0]), HospiSysAdmin.requestSystemKey(username, password));
+
+                    // refreshes results on search screen
+                    if(searchButton.length == 1) {
+                        searchButton[0].doClick();
+                    }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -537,7 +542,7 @@ public class HospiSys {
         // edit button
         JButton editButton = new JButton("Edit");
         editButton.setFont(font);
-        editButton.addActionListener(e -> editPatient(Integer.parseInt(patient[0]), username, password, frame, new HospiSysData("dat/patients.hsd")));
+        editButton.addActionListener(e -> editPatient(Integer.parseInt(patient[0]), username, password, frame, new HospiSysData("dat/patients.hsd"), searchButton));
 
         // done button
         JButton doneButton = new JButton("Done");

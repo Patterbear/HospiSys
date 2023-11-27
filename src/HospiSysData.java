@@ -45,7 +45,7 @@ public class HospiSysData {
 
     // Patient detail edit function
     // replaces a chosen field with new data
-    public void editPatient(int id, int fieldNumber, String newData) throws IOException {
+    public void editPatient(int id, int fieldNumber, String newData, JButton... searchButton) throws IOException {
         List<String> contents = new ArrayList<>(Files.readAllLines(file.toPath(), StandardCharsets.UTF_8));
         String[] record = HospiSysData.decryptRecord(contents.get(id).split("-"), "a", "a");
         record[fieldNumber] = newData;
@@ -60,7 +60,6 @@ public class HospiSysData {
         contents.set(id, recordString);
 
         Files.write(file.toPath(), contents, StandardCharsets.UTF_8);
-
     }
 
     public int nextId() throws IOException {

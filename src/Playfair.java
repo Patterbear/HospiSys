@@ -91,7 +91,6 @@ public class Playfair {
     // Playfair message formatting function
     private static char[] formatMessage(String message) {
         char[] messageChars = message.toUpperCase().replace(" ", "").toCharArray();
-                //.replace("J", "I").toCharArray();
 
         String messageNoDuplicates = Character.toString(messageChars[0]);
 
@@ -120,8 +119,6 @@ public class Playfair {
     // returns cipher text created from given message and key
     public static String encrypt(String message, String key) {
 
-        System.out.println("message: " +message);
-
         // format key
         char[] keyChars = key.toUpperCase().replace("J", "I").toCharArray();
         // swap '\' for '/' as '\' is used to indicate removable characters
@@ -131,14 +128,11 @@ public class Playfair {
         char[][] lettersGrid = generateGrid(keyChars);
         char[] messageChars = formatMessage(message);
 
-        System.out.println("fotmatted message: " + new String(messageChars));
-
         // apply playfair rules
         String result = "";
 
         for (int i = 1; i < messageChars.length; i+=2) {
             int[] first = searchGrid(lettersGrid, messageChars[i - 1]);
-            System.out.println("first: " + Arrays.toString(first));
 
             // skips over character if it's a '\' followed by 'I'
             if (messageChars[i] == '\\' && messageChars[i - 1] == 'I') {
@@ -147,8 +141,6 @@ public class Playfair {
             }
 
             int[] second = searchGrid(lettersGrid, messageChars[i]);
-
-            System.out.println("second: " + Arrays.toString(second));
 
             // same row, shift right
             if (first[0] == second[0]) {
