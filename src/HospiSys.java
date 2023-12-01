@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
@@ -566,11 +567,33 @@ public class HospiSys {
     }
 
 
-    // Main method
-    public static void main(String[] args) throws IOException {
-        System.out.println("HospiSys is running...");
+    // Check installation function
+    // determines if a new installation is needed if it is non-existent or broken
+    private static boolean checkInstalled() {
+        Path adminPath = Path.of("dat/admin.hsd");
+        Path usersPath = Path.of("dat/users.hsd");
+        Path patientsPath = Path.of("dat/patients.hsd");
 
-        start();
+        // checks if all required files exists
+        if(Files.exists(adminPath) && Files.exists(usersPath) && Files.exists(patientsPath)) {
+            // checks if 'admin.hsd' or 'users.hsd' are empty
+            if(new File(adminPath.toUri()).length() != 0 && new File(usersPath.toUri()).length() != 0) {
+                return  true;
+            }
+            // informs user that installation is broken
+            JOptionPane.showMessageDialog(null, "Installation is incomplete. Please reinstall.");
+        }
+        return false;
+    }
+
+    // Main method
+    // launches setup if not installed
+    public static void main(String[] args) throws IOException {
+        if(checkInstalled()) {
+            start();
+        } else {
+            HospiSysSetup.start();
+        }
     }
 
 }

@@ -245,7 +245,7 @@ public class HospiSysSetup {
 
     // Start method
     // opens setup initialisation screen
-    private static void start() throws IOException {
+    public static void start() throws IOException {
 
         // JFrame initialisation and configurations
         JFrame frame = HospiSys.buildScreen("Setup", 450, 200, true);
@@ -294,11 +294,5 @@ public class HospiSysSetup {
         frame.getContentPane().add(buttonsPanel, gbc);
 
         frame.setVisible(true);
-    }
-
-
-    // Main method
-    public static void main(String[] args) throws IOException {
-        start();
     }
 }
