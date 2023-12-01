@@ -17,7 +17,7 @@ import java.util.Arrays;
 // Main class
 public class HospiSys {
 
-    public static Image logoImage = new ImageIcon("img/logo.png").getImage();
+    public static ImageIcon logoImage = new ImageIcon(new ImageIcon("img/logo.png").getImage().getScaledInstance(200, 150, Image.SCALE_FAST));
 
     public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);
 
@@ -27,8 +27,8 @@ public class HospiSys {
     public static JFrame buildScreen(String title, int width, int height, boolean exit) {
         JFrame frame = new JFrame("HospiSys - " + title);
         frame.setSize(width, height);
-        frame.setIconImage(logoImage);
-        frame.setResizable(false);
+        frame.setIconImage(logoImage.getImage());
+        //frame.setResizable(false);
         if(exit) {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         } else {
@@ -47,7 +47,7 @@ public class HospiSys {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(logoImage);
 
         // currently unused
         JLabel label = new JLabel("HospiSys v1.0");
@@ -76,7 +76,7 @@ public class HospiSys {
         passwordEntry.setFont(font);
         passwordEntry.setEchoChar('*');
         JButton viewPassword = new JButton("Show");
-        //viewPassword.setFont(font);
+        viewPassword.setFont(font);
         viewPassword.addActionListener(e -> {
             if (passwordEntry.getEchoChar() == '*') {
                 passwordEntry.setEchoChar((char)0);
@@ -178,7 +178,7 @@ public class HospiSys {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(logoImage);
 
         // buttons
         JButton patientSearch = new JButton("Search Patients");

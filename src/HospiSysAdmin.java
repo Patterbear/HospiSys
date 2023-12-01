@@ -100,7 +100,7 @@ public class HospiSysAdmin {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // logo
-        JLabel logo = new JLabel(new ImageIcon(HospiSys.logoImage.getScaledInstance(200, 150, Image.SCALE_FAST)));
+        JLabel logo = new JLabel(HospiSys.logoImage);
 
         // label
         JLabel label = new JLabel("Create new account:");
