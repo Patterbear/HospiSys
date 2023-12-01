@@ -37,7 +37,7 @@ public class HospiSysData {
 
     // Patient record deletion method
     // overwrites patient data with backslash values indicating it can be written over
-    public void deletePatient(int id, String key) throws IOException {
+    public void deletePatient(int id) throws IOException {
         for(int i = 1; i < patientLabels.length; i++) {
             editPatient(id, i, "\\");
         }

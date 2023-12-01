@@ -248,7 +248,7 @@ public class HospiSys {
         // search bar and criteria dropdown
         JPanel searchPanel = new JPanel();
         TextField searchBar = new TextField(20);
-        JComboBox criteriaDropdown = new JComboBox(HospiSysData.patientLabels);
+        JComboBox<String> criteriaDropdown = new JComboBox<>(HospiSysData.patientLabels);
         JButton searchButton = new JButton("Search");
 
         searchPanel.add(searchBar);
@@ -371,7 +371,7 @@ public class HospiSys {
         saveButton.addActionListener(e -> {
             // saving uploaded profile image
             try {
-                Files.copy(Paths.get(jfc.getSelectedFile().getPath()), Paths.get("img/" + Integer.toString(hsd.nextId()) + ".png"), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(Paths.get(jfc.getSelectedFile().getPath()), Paths.get("img/" + hsd.nextId() + ".png"), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -437,7 +437,7 @@ public class HospiSys {
 
         JPanel fieldEditPanel = new JPanel();
         TextField dataEntry = new TextField(20);
-        JComboBox fieldDropdown = new JComboBox(fields);
+        JComboBox<String> fieldDropdown = new JComboBox<>(fields);
 
         fieldEditPanel.add(dataEntry);
         fieldEditPanel.add(fieldDropdown);
@@ -460,7 +460,7 @@ public class HospiSys {
             frame.dispose();
             parent.dispose();
             try {
-                // refreshes the search results to reflect changes
+                // refreshes the search results to reflect change
                 if (searchButton.length != 0) {searchButton[0].doClick();}
                 patientProfile(HospiSysData.decryptRecord(hsd.retrieve(id), username, password), username, password, searchButton);
             } catch (IOException ex)  {
@@ -529,7 +529,7 @@ public class HospiSys {
             if(choice == JOptionPane.YES_OPTION) {
                 HospiSysData hsd = new HospiSysData("dat/patients.hsd");
                 try {
-                    hsd.deletePatient(Integer.parseInt(patient[0]), HospiSysAdmin.requestSystemKey(username, password));
+                    hsd.deletePatient(Integer.parseInt(patient[0]));
 
                     // refreshes results on search screen
                     if(searchButton.length == 1) {

@@ -245,7 +245,7 @@ public class HospiSysSetup {
 
     // Start method
     // opens setup initialisation screen
-    public static void start() throws IOException {
+    public static void start() {
 
         // JFrame initialisation and configurations
         JFrame frame = HospiSys.buildScreen("Setup", 450, 200, true);
