@@ -460,8 +460,10 @@ public class HospiSys {
             frame.dispose();
             parent.dispose();
             try {
-                patientProfile(HospiSysData.decryptRecord(hsd.retrieve(id), username, password), username, password);
-            } catch (IOException ex) {
+                // refreshes the search results to reflect changes
+                if (searchButton.length != 0) {searchButton[0].doClick();}
+                patientProfile(HospiSysData.decryptRecord(hsd.retrieve(id), username, password), username, password, searchButton);
+            } catch (IOException ex)  {
                 throw new RuntimeException(ex);
             }
         });
@@ -581,7 +583,7 @@ public class HospiSys {
                 return  true;
             }
             // informs user that installation is broken
-            JOptionPane.showMessageDialog(null, "Installation is incomplete. Please reinstall.");
+            JOptionPane.showMessageDialog(null, "Existing installation is incomplete.");
         }
         return false;
     }
