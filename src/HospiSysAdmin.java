@@ -1,10 +1,14 @@
 package src;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 public class HospiSysAdmin {
@@ -67,8 +71,18 @@ public class HospiSysAdmin {
             }
         });
 
+        JButton systemKeyButton = new JButton("System Key");
+        systemKeyButton.addActionListener(e -> {
+            try {
+                systemKeyConfig();
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
         buttonsPanel.add(newUserButton);
         buttonsPanel.add(staffInterfaceButton);
+        buttonsPanel.add(systemKeyButton);
 
         JButton logoutButton = new JButton("Log Out");
         logoutButton.addActionListener(e -> {
@@ -237,10 +251,103 @@ public class HospiSysAdmin {
     // returns system key if user is authorised
     public static String requestSystemKey(String username, String password) throws FileNotFoundException {
         if(new HospiSysData("dat/users.hsd").verifyUser(username, password)) {
-            return "systemkey";
+            return getSystemKey();
         } else {
             return "";
         }
 
+    }
+
+
+    // Get system key method
+    // retrieves key from file
+    // COMMENT: If this system was commercially deployed, this file would be stored securely on the admin server
+    private static String getSystemKey() throws FileNotFoundException {
+        Scanner s = new Scanner(new File("dat/syskey.txt"));
+
+        return s.nextLine();
+    }
+
+    // Set system key method
+    // changes key and re-encrypts patient data
+    private static void setSystemKey(String newKey) throws IOException {
+        PrintWriter pw = new PrintWriter("dat/syskey.txt");
+        pw.println(newKey);
+        pw.close();
+    }
+
+    // Screen for system key changing
+    // allows user to change system key
+    private static void editSystemKey(JFrame parent) {
+        JFrame frame = HospiSys.buildScreen("Edit System Key", 400, 175, false);
+        frame.setLayout(new GridLayout(0, 1));
+
+        TextField keyEntry = new TextField(20);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            try {
+                setSystemKey(keyEntry.getText());
+                frame.dispose();
+                parent.dispose();
+                systemKeyConfig();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+
+        frame.getContentPane().add(new JLabel("New System Key:"));
+        frame.getContentPane().add(keyEntry);
+        frame.getContentPane().add(saveButton);
+
+
+        frame.setVisible(true);
+    }
+
+
+    // System key config window method
+    // allows user to view or edit the system key
+    private static void systemKeyConfig() throws FileNotFoundException {
+        JFrame frame = HospiSys.buildScreen("System Key", 400, 175, false);
+        frame.setLayout(new GridLayout(0, 1));
+        frame.setResizable(false);
+
+        JLabel label = new JLabel("System Key");
+        label.setBorder(new EmptyBorder(0,150,0,0));
+
+        TextField systemKey = new TextField(20);
+        systemKey.setEditable(false);
+        systemKey.setEchoChar('*');
+        systemKey.setText(getSystemKey());
+
+        JPanel buttons = new JPanel();
+
+        JButton back = new JButton("Back");
+        back.addActionListener(e -> frame.dispose());
+
+        JButton edit = new JButton("Edit");
+        edit.addActionListener(e -> editSystemKey(frame));
+
+        JButton view = new JButton("View");
+        view.addActionListener(e -> {
+            if (view.getText().equals("View")) {
+                view.setText("Hide");
+                systemKey.setEchoChar((char)0);
+            } else {
+                view.setText("View");
+                systemKey.setEchoChar('*');
+            }
+        });
+
+        buttons.add(back);
+        buttons.add(edit);
+        buttons.add(view);
+
+        frame.getContentPane().add(label);
+        frame.getContentPane().add(systemKey);
+        frame.getContentPane().add(buttons);
+
+        frame.setVisible(true);
     }
 }
