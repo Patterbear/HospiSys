@@ -279,10 +279,14 @@ public class HospiSysAdmin {
     // Screen for system key changing
     // allows user to change system key
     private static void editSystemKey(JFrame parent) {
-        JFrame frame = HospiSys.buildScreen("Edit System Key", 400, 175, false);
-        frame.setLayout(new GridLayout(0, 1));
+        JFrame frame = HospiSys.buildScreen("Edit System Key", 450, 75, false);
+        frame.setResizable(false);
+
+        JPanel keyPanel = new JPanel();
+        keyPanel.add(new JLabel("New System Key"));
 
         TextField keyEntry = new TextField(20);
+        keyPanel.add(keyEntry);
 
         JButton saveButton = new JButton("Save");
         saveButton.addActionListener(e -> {
@@ -295,11 +299,9 @@ public class HospiSysAdmin {
                 throw new RuntimeException(ex);
             }
         });
+        keyPanel.add(saveButton);
 
-
-        frame.getContentPane().add(new JLabel("New System Key:"));
-        frame.getContentPane().add(keyEntry);
-        frame.getContentPane().add(saveButton);
+        frame.getContentPane().add(keyPanel);
 
 
         frame.setVisible(true);
@@ -309,17 +311,19 @@ public class HospiSysAdmin {
     // System key config window method
     // allows user to view or edit the system key
     private static void systemKeyConfig() throws FileNotFoundException {
-        JFrame frame = HospiSys.buildScreen("System Key", 400, 175, false);
+        JFrame frame = HospiSys.buildScreen("System Key", 400, 125, false);
         frame.setLayout(new GridLayout(0, 1));
         frame.setResizable(false);
 
-        JLabel label = new JLabel("System Key");
-        label.setBorder(new EmptyBorder(0,150,0,0));
+        JPanel keyPanel = new JPanel();
+        keyPanel.add(new JLabel("System Key:"));
 
         TextField systemKey = new TextField(20);
         systemKey.setEditable(false);
         systemKey.setEchoChar('*');
         systemKey.setText(getSystemKey());
+
+        keyPanel.add(systemKey);
 
         JPanel buttons = new JPanel();
 
@@ -344,8 +348,7 @@ public class HospiSysAdmin {
         buttons.add(edit);
         buttons.add(view);
 
-        frame.getContentPane().add(label);
-        frame.getContentPane().add(systemKey);
+        frame.getContentPane().add(keyPanel);
         frame.getContentPane().add(buttons);
 
         frame.setVisible(true);
