@@ -229,11 +229,17 @@ public class HospiSysData {
         int field = Arrays.asList(patientLabels).indexOf(category);
         List<List<String>> resultList = new ArrayList<List<String>>();
 
-        // prevents attempted encryption of empty string or '*' wildcard
-        if(!term.equals("") && !term.equals("*")) {
-            term = Playfair.encrypt(term, HospiSysAdmin.requestSystemKey(username, password)).toUpperCase();
+        String[] segregatedTerm = segregateRecordSegment(term);
+        String encryptedTerm = "";
+        for(int i = 0; i < segregatedTerm.length; i++) {
+            if (isOnlyLetters(segregatedTerm[i])) {
+                encryptedTerm += Playfair.encrypt(segregatedTerm[i], HospiSysAdmin.requestSystemKey(username, password));
+            } else {
+                encryptedTerm += segregatedTerm[i];
+            }
         }
 
+        term = encryptedTerm;
 
         Scanner scanner = new Scanner(file);
 
