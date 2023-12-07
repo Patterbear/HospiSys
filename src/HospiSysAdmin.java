@@ -74,7 +74,7 @@ public class HospiSysAdmin {
         JButton systemKeyButton = new JButton("System Key");
         systemKeyButton.addActionListener(e -> {
             try {
-                systemKeyConfig();
+                systemKeyConfig(username, password);
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
@@ -270,15 +270,24 @@ public class HospiSysAdmin {
 
     // Set system key method
     // changes key and re-encrypts patient data
-    private static void setSystemKey(String newKey) throws IOException {
+    private static void setSystemKey(String newKey, String username, String password) throws IOException {
+
+        // Decrypt patient data ready for system key change
+        String[][] decryptedData = HospiSysData.decryptPatientData(username, password);
+
+        // Write new key to file
         PrintWriter pw = new PrintWriter("dat/syskey.txt");
         pw.println(newKey);
         pw.close();
+
+        // Re-encrypt data
+        HospiSysData.reencryptPatientData(decryptedData, username, password);
+
     }
 
     // Screen for system key changing
     // allows user to change system key
-    private static void editSystemKey(JFrame parent) {
+    private static void editSystemKey(JFrame parent, String username, String password) {
         JFrame frame = HospiSys.buildScreen("Edit System Key", 450, 75, false);
         frame.setResizable(false);
 
@@ -291,10 +300,10 @@ public class HospiSysAdmin {
         JButton saveButton = new JButton("Save");
         saveButton.addActionListener(e -> {
             try {
-                setSystemKey(keyEntry.getText());
+                setSystemKey(keyEntry.getText(), username, password);
                 frame.dispose();
                 parent.dispose();
-                systemKeyConfig();
+                systemKeyConfig(username, password);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -310,7 +319,7 @@ public class HospiSysAdmin {
 
     // System key config window method
     // allows user to view or edit the system key
-    private static void systemKeyConfig() throws FileNotFoundException {
+    private static void systemKeyConfig(String username, String password) throws FileNotFoundException {
         JFrame frame = HospiSys.buildScreen("System Key", 400, 125, false);
         frame.setLayout(new GridLayout(0, 1));
         frame.setResizable(false);
@@ -331,7 +340,7 @@ public class HospiSysAdmin {
         back.addActionListener(e -> frame.dispose());
 
         JButton edit = new JButton("Edit");
-        edit.addActionListener(e -> editSystemKey(frame));
+        edit.addActionListener(e -> editSystemKey(frame, username, password));
 
         JButton view = new JButton("View");
         view.addActionListener(e -> {

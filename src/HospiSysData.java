@@ -334,4 +334,39 @@ public class HospiSysData {
     public void encryptedWrite(String s, String key) throws IOException {
         write(Playfair.encrypt(s, key) + "\n");
     }
+
+    // Patient data de-encryption function
+    // decrypts all data in preparation for re-encryption
+    public static String[][] decryptPatientData(String username, String password) throws IOException {
+        String[] data = Files.readAllLines(new File("dat/patients.hsd").toPath()).toArray(new String[0]);
+        String[][] decryptedData = new String[data.length][patientLabels.length];
+
+        // verify admin status
+        if(HospiSysAdmin.verifyAdmin(Playfair.encrypt(username, password))) {
+            for (int i = 0; i < data.length; i++) {
+                String[] decryptedRecord = HospiSysData.decryptRecord(data[i].split("-"), username, password);
+                for(int j = 0; j < patientLabels.length; j++) {
+                    decryptedData[i][j] = decryptedRecord[j];
+                }
+            }
+        }
+
+        return decryptedData;
+    }
+
+    // Patient data re-encryption function
+    // re-encrypts data and write to file
+    public static void reencryptPatientData(String[][] data, String username, String password) throws IOException {
+        String[] encryptedData = new String[data.length];
+
+        // verify admin status
+        if(HospiSysAdmin.verifyAdmin(Playfair.encrypt(username, password))) {
+            // Re-encrypt data and write to file
+            PrintWriter pw = new PrintWriter("dat/patients.hsd");
+            for (int i = 0; i < data.length; i++) {
+                pw.println(String.join("-", encryptRecord(data[i], username, password)));
+            }
+            pw.close();
+        }
+    }
 }
