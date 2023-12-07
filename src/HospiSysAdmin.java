@@ -1,14 +1,11 @@
 package src;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 public class HospiSysAdmin {
@@ -48,6 +45,9 @@ public class HospiSysAdmin {
         // Frame setup
         JFrame frame = HospiSys.buildScreen("Admin Interface", 725, 350, true);
         frame.setLayout(new GridLayout(0, 1));
+
+        JPanel systemStatusPanel = new JPanel();
+        systemStatusPanel.add(new JLabel("System status: Online"));
 
         JPanel buttonsPanel = new JPanel();
 
@@ -94,7 +94,7 @@ public class HospiSysAdmin {
             }
         });
 
-        frame.getContentPane().add(new JLabel("System Status: Online"));
+        frame.getContentPane().add(systemStatusPanel);
         frame.getContentPane().add(buttonsPanel);
         frame.getContentPane().add(logoutButton);
 
