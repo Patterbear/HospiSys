@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,6 +13,56 @@ import java.util.Comparator;
 
 // System setup class
 public class HospiSysSetup {
+
+
+    // Setup System Key screen
+    private static void setupSystemKey(String path) {
+        JFrame frame = HospiSys.buildScreen("Create System Key", 700, 500, false);
+        frame.setResizable(false);
+        frame.setLayout(new GridLayout(0,1));
+
+        // Text panel
+        JPanel textPanel = new JPanel(new GridLayout(0, 1));
+
+        JLabel title = new JLabel("Please create a system key");
+        title.setFont(HospiSys.font);
+
+        JLabel info = new JLabel("Please make a secure physical copy of this key." +
+                "If the key file is deleted or tampered with, the data will not decrypt.");
+
+        textPanel.add(title);
+        textPanel.add(info);
+
+
+        JPanel keyPanel = new JPanel();
+
+        TextField keyEntry = new TextField(20);
+        keyPanel.add(keyEntry);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            try {
+                frame.dispose();
+
+                // Write new key to file
+                PrintWriter pw = new PrintWriter("dat/syskey.txt");
+                pw.println(keyEntry.getText());
+                pw.close();
+
+                setupAdmin(path);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        keyPanel.add(saveButton);
+
+
+        frame.getContentPane().add(textPanel);
+        frame.getContentPane().add(keyPanel);
+
+
+        frame.setVisible(true);
+    }
 
     // Setup admin screen
     private static void setupAdmin(String path) throws IOException {
@@ -76,8 +127,8 @@ public class HospiSysSetup {
         saveButton.addActionListener(e -> {
             if (passwordEntry.getText().equals(repeatPasswordEntry.getText())) {
                 try {
-                    new HospiSysData(path + "/HospiSys/dat/users.hsd").writeUser(usernameEntry.getText(), passwordEntry.getText());
-                    new HospiSysData(path + "/HospiSys/dat/admin.hsd").encryptedWrite(usernameEntry.getText(), passwordEntry.getText());
+                    new HospiSysData(path + "/dat/users.hsd").writeUser(usernameEntry.getText(), passwordEntry.getText());
+                    new HospiSysData(path + "/dat/admin.hsd").encryptedWrite(usernameEntry.getText(), passwordEntry.getText());
 
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -126,46 +177,66 @@ public class HospiSysSetup {
 
     // Create folders function
     private static void createFolders(String path) throws IOException {
-        Path folderPath = Path.of(path + "/HospiSys");
-        if(Files.exists(folderPath)) {
+        // Path folderPath = Path.of(path + "/HospiSys");
+
+        Path datPath = Path.of(path + "/dat");
+        Path imgPath = Path.of(path + "/img");
+
+
+        if(Files.exists(datPath)) {
+            String messageExtra = "";
+            if(Files.exists(imgPath)) {
+                messageExtra += "Incomplete ";
+            }
 
             // pop up gives the user option to delete existing installation
             int choice = JOptionPane.showConfirmDialog(null,
-                    "HospiSys installation already exists. Delete?",
-                    "Installation found",
+                    messageExtra + "HospiSys installation found. Delete?",
+                    messageExtra + "Installation found",
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(choice == JOptionPane.YES_OPTION) {
-                deleteInstallation(folderPath);
+                deleteInstallation(new File(path).toPath());
             } else {
                 return;
             }
         }
 
-        new File(path + "/HospiSys").mkdirs();
-        new File(path + "/HospiSys/dat").mkdirs();
-        new File(path + "/HospiSys/img").mkdirs();
+        new File(path + "/dat").mkdirs();
+        new File(path + "/img").mkdirs();
+        createHSDs(path);
     }
 
     // Delete existing installation function
     // deletes an existing installation if found
     private static void deleteInstallation(Path folderPath) throws IOException {
-        Files.walk(folderPath).sorted(Comparator.reverseOrder()).forEach(path -> {
+
+        // delete dat folder and files
+        Path datPath = new File(folderPath + "/dat").toPath();
+
+        Files.walk(datPath).sorted(Comparator.reverseOrder()).forEach(path -> {
             try {
                 Files.delete(path);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
+
+        // delete patient images
+        // TODO: THIS
     }
 
     // Create data files method
     private static void createHSDs(String path) throws IOException {
-        Files.createFile(Paths.get(path + "/HospiSys/dat/admin.hsd"));
-        Files.createFile(Paths.get(path + "/HospiSys/dat/patients.hsd"));
-        Files.createFile(Paths.get(path + "/HospiSys/dat/users.hsd"));
+        Files.createFile(Paths.get(path + "/dat/admin.hsd"));
+        Files.createFile(Paths.get(path + "/dat/patients.hsd"));
+        Files.createFile(Paths.get(path + "/dat/users.hsd"));
+
+
+        setupSystemKey(path);
     }
 
     // Install directory selection screen
+    // unused for now as installation will occur in current directory
     private static void selectDirectory() throws IOException {
         // JFrame initialisation and configurations
         JFrame frame = HospiSys.buildScreen("Select Install Location", 650, 260, true);
@@ -268,7 +339,9 @@ public class HospiSysSetup {
         begin.addActionListener(e -> {
             frame.dispose();
             try {
-                selectDirectory();
+                String currentPath = System.getProperty("user.dir");
+                createFolders(currentPath);
+                //createHSDs(currentPath);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

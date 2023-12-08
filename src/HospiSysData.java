@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class HospiSysData {
 
-     private final File file;
+    private final File file;
 
     public static String[] patientLabels = {
             "HospiSys ID",
@@ -186,7 +186,7 @@ public class HospiSysData {
             }
             decryptedRecord[i] = decryptedRecordSegment.replace("\\I", "J").replace("I\\", "J").replace("X\\", "").replace("Z\\", "");
         }
-        
+
         return formatDecryptedRecord(decryptedRecord);
 
     }
@@ -292,9 +292,8 @@ public class HospiSysData {
         String[] result = new String[1];
 
         while (scanner.hasNextLine()) {
-
             user = scanner.nextLine();
-            if (user.split("-")[0].equals(usernameHash)) {
+            if (user.replace("\\", "").split("-")[0].equals(usernameHash)) {
                 result = user.replace("\\", "").split("-");
                 break;
             }
@@ -312,6 +311,10 @@ public class HospiSysData {
         String usernameHash = Playfair.encrypt(username, password).replace("\\", "");
         String passwordHash = Playfair.encrypt(password, password).replace("\\", "");
         String[] user = readUser(usernameHash);
+
+        System.out.println("usernameHash: " + usernameHash);
+        System.out.println("passwordHash: " + passwordHash);
+        System.out.println(Arrays.toString(user));
 
         if(usernameHash.equals(user[0]) && passwordHash.equals(user[1])) {
             return true;
