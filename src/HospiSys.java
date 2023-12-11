@@ -244,6 +244,7 @@ public class HospiSys {
         // search bar and criteria dropdown
         JPanel searchPanel = new JPanel();
         TextField searchBar = new TextField(20);
+        searchBar.setText("*");
         JComboBox<String> criteriaDropdown = new JComboBox<>(HospiSysData.patientLabels);
         JButton searchButton = new JButton("Search");
 
@@ -301,6 +302,10 @@ public class HospiSys {
 
         frame.getContentPane().add(searchPanel);
         frame.getContentPane().add(resultsScrollPane);
+
+        // by default shows all records
+        searchButton.doClick();
+        searchBar.setText("");
 
         frame.setVisible(true);
 

@@ -3,12 +3,15 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
+import java.util.Scanner;
 
 
 // System setup class
@@ -162,8 +165,24 @@ public class HospiSysSetup {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-
-                frame.dispose();
+                
+                // pop up gives the user option to add example patient records
+                int choice = JOptionPane.showConfirmDialog(null,
+                        "Would you like to add some example patient records?",
+                        "Example Records",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if(choice == JOptionPane.YES_OPTION) {
+                    try {
+                        addDemoPatients(usernameEntry.getText(), passwordEntry.getText());
+                    } catch (FileNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    frame.dispose();
+                } else {
+                    frame.dispose();
+                }
                 try {
                     HospiSys.start();
                 } catch (IOException ex) {
@@ -204,6 +223,24 @@ public class HospiSysSetup {
         frame.setVisible(true);
     }
 
+
+    // Add demo patients method
+    // adds some example patients to the system for demonstration
+    private static void addDemoPatients(String username, String password) throws IOException {
+        Scanner s = new Scanner(new File("demo/demo_records"));
+        HospiSysData hsd = new HospiSysData("dat/patients.hsd");
+
+        // encrypt and write demo records
+        while (s.hasNextLine()) {
+            hsd.writeRecord(HospiSysData.encryptRecord(s.nextLine().split("-"), username, password));
+        }
+
+        // copy example patient images
+        for (int i = 1; i < 4; i++) {
+            Files.copy(Paths.get("demo/" + i + ".png"), Paths.get("img/" + i + ".png"), StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
     // Create folders function
     private static void createFolders(String path) throws IOException {
         Path datPath = Path.of(path + "/dat");
@@ -237,6 +274,13 @@ public class HospiSysSetup {
     // deletes an existing installation if found
     private static void deleteInstallation(Path folderPath) throws IOException {
 
+        // delete patient images
+        int recordCount = new HospiSysData("dat/patients.hsd").nextId();
+        for(int i = 1; i < recordCount; i++) {
+            Files.deleteIfExists(Path.of(folderPath + "/img/" + Integer.toString(i) + ".png"));
+        }
+
+
         // delete dat folder and files
         Path datPath = new File(folderPath + "/dat").toPath();
 
@@ -248,8 +292,6 @@ public class HospiSysSetup {
             }
         });
 
-        // delete patient images
-        // TODO: THIS
     }
 
     // Create data files method
