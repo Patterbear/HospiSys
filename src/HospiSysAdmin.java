@@ -199,20 +199,29 @@ public class HospiSysAdmin {
         saveButton.setFont(HospiSys.font);
         saveButton.addActionListener(e -> {
             if (passwordEntry.getText().equals(repeatPasswordEntry.getText())) {
-                try {
-                    new HospiSysData("dat/users.hsd").writeUser(usernameEntry.getText(), passwordEntry.getText());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                if (adminStatus.isSelected()) {
-                    try {
-                        new HospiSysData("dat/admin.hsd").encryptedWrite(usernameEntry.getText(), passwordEntry.getText());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
+                if(HospiSysData.usernameSuitable(usernameEntry.getText())) {
+                    if(HospiSysData.passwordSuitable(passwordEntry.getText())) {
+                        try {
+                            new HospiSysData("dat/users.hsd").writeUser(usernameEntry.getText(), passwordEntry.getText());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        if (adminStatus.isSelected()) {
+                            try {
+                                new HospiSysData("dat/admin.hsd").encryptedWrite(usernameEntry.getText(), passwordEntry.getText());
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
 
-                frame.dispose();
+                        frame.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Passwords must be at least 8 characters long.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Username must be at least 4 characters long.");
+
+                }
 
             } else {
                 JOptionPane.showMessageDialog(null, "Passwords do not match.");

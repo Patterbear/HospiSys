@@ -31,6 +31,27 @@ public class HospiSysData {
     };
 
 
+    // Check username validity function
+    // used to ensure usernames meet the criteria (no non-letters, more than 3 characters)
+    // TODO: Allow numbers and symbols
+    public static boolean usernameSuitable(String username) {
+        if(isOnlyLetters(username) && username.length() > 3) {
+            return true;
+        }
+        return false;
+    }
+
+    // Check username validity function
+    // used to ensure password meet the criteria (no non-letters, more than 7 characters)
+    // TODO: Allow numbers and symbols
+    public static boolean passwordSuitable(String password) {
+        if(isOnlyLetters(password) && password.length() > 7) {
+            return true;
+        }
+        return false;
+    }
+
+
     HospiSysData(String path) {
         this.file = new File(path);
     }

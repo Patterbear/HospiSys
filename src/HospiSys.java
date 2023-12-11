@@ -22,7 +22,6 @@ public class HospiSys {
 
     public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);
 
-
     // Build screen function
     // creates a JFrame with some standard configurations
     public static JFrame buildScreen(String title, int width, int height, boolean exit) {

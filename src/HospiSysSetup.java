@@ -158,36 +158,46 @@ public class HospiSysSetup {
         saveButton.setFont(HospiSys.font);
         saveButton.addActionListener(e -> {
             if (passwordEntry.getText().equals(repeatPasswordEntry.getText())) {
-                try {
-                    new HospiSysData(path + "/dat/users.hsd").writeUser(usernameEntry.getText(), passwordEntry.getText());
-                    new HospiSysData(path + "/dat/admin.hsd").encryptedWrite(usernameEntry.getText(), passwordEntry.getText());
+                if(HospiSysData.usernameSuitable(usernameEntry.getText())) {
+                    if(HospiSysData.passwordSuitable(passwordEntry.getText())) {
+                        try {
+                            new HospiSysData(path + "/dat/users.hsd").writeUser(usernameEntry.getText(), passwordEntry.getText());
+                            new HospiSysData(path + "/dat/admin.hsd").encryptedWrite(usernameEntry.getText(), passwordEntry.getText());
 
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                
-                // pop up gives the user option to add example patient records
-                int choice = JOptionPane.showConfirmDialog(null,
-                        "Would you like to add some example patient records?",
-                        "Example Records",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if(choice == JOptionPane.YES_OPTION) {
-                    try {
-                        addDemoPatients(usernameEntry.getText(), passwordEntry.getText());
-                    } catch (FileNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                        // pop up gives the user option to add example patient records
+                        int choice = JOptionPane.showConfirmDialog(null,
+                                "Would you like to add some example patient records?",
+                                "Example Records",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                        if(choice == JOptionPane.YES_OPTION) {
+                            try {
+                                addDemoPatients(usernameEntry.getText(), passwordEntry.getText());
+                            } catch (FileNotFoundException ex) {
+                                throw new RuntimeException(ex);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            frame.dispose();
+                        } else {
+                            frame.dispose();
+                        }
+                        try {
+                            HospiSys.start();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Passwords must be at least 8 characters long.");
                     }
-                    frame.dispose();
                 } else {
-                    frame.dispose();
+                    JOptionPane.showMessageDialog(null, "Username must be at least 4 characters long.");
+
                 }
-                try {
-                    HospiSys.start();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+
 
             } else {
                 JOptionPane.showMessageDialog(null, "Passwords do not match.");
