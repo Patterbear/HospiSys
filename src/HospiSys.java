@@ -453,7 +453,7 @@ public class HospiSys {
         save.addActionListener(e -> {
             try {
                 String newData = dataEntry.getText();
-                new HospiSysData("dat/patients.hsd").editPatient(id, fieldDropdown.getSelectedIndex() + 1, newData);
+                new HospiSysData("dat/patients.hsd").editPatient(id, fieldDropdown.getSelectedIndex() + 1, newData, username, password);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -529,7 +529,7 @@ public class HospiSys {
             if(choice == JOptionPane.YES_OPTION) {
                 HospiSysData hsd = new HospiSysData("dat/patients.hsd");
                 try {
-                    hsd.deletePatient(Integer.parseInt(patient[0]));
+                    hsd.deletePatient(Integer.parseInt(patient[0]), username, password);
 
                     // refreshes results on search screen
                     if(searchButton.length == 1) {

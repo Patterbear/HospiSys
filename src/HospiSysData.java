@@ -58,20 +58,20 @@ public class HospiSysData {
 
     // Patient record deletion method
     // overwrites patient data with backslash values indicating it can be written over
-    public void deletePatient(int id) throws IOException {
+    public void deletePatient(int id, String username, String password) throws IOException {
         for(int i = 1; i < patientLabels.length; i++) {
-            editPatient(id, i, "\\");
+            editPatient(id, i, "\\", username, password);
         }
     }
 
     // Patient detail edit function
     // replaces a chosen field with new data
-    public void editPatient(int id, int fieldNumber, String newData, JButton... searchButton) throws IOException {
+    public void editPatient(int id, int fieldNumber, String newData, String username, String password, JButton... searchButton) throws IOException {
         List<String> contents = new ArrayList<>(Files.readAllLines(file.toPath(), StandardCharsets.UTF_8));
-        String[] record = HospiSysData.decryptRecord(contents.get(id).split("-"), "a", "a");
+        String[] record = HospiSysData.decryptRecord(contents.get(id).split("-"), username, password);
         record[fieldNumber] = newData;
 
-        record = HospiSysData.encryptRecord(record, "a", "a");
+        record = HospiSysData.encryptRecord(record, username, password);
 
         String recordString = Integer.toString(id);
 
