@@ -20,7 +20,7 @@ public class HospiSysAdmin {
         usernameHash = usernameHash.replace("\\", "");
 
         while (scanner.hasNextLine()) {
-            record = scanner.nextLine();
+            record = scanner.nextLine().replace("\\", "");
             if (record.equals(usernameHash)) {
                 scanner.close();
                 return true;
