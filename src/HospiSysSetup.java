@@ -17,18 +17,20 @@ public class HospiSysSetup {
 
     // Setup System Key screen
     public static void setupSystemKey(String path) {
-        JFrame frame = HospiSys.buildScreen("Create System Key", 725, 150, false);
+        JFrame frame = HospiSys.buildScreen("Create System Key", 725, 200, false);
         frame.setResizable(false);
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Screen title label
-        JLabel title = new JLabel("Please create a system key");
+        JLabel title = new JLabel("Generated System Key");
         title.setFont(HospiSys.font);
 
         // Information label
         JLabel info = new JLabel("Please make a secure physical copy of this key." +
                 " If the key file is deleted or tampered with, the data will not decrypt.");
+
+        JLabel regenInfo = new JLabel("The System Key can be regenerated at any time from the admin interface.");
 
 
         // Key section
@@ -36,10 +38,19 @@ public class HospiSysSetup {
 
         // Key entry
         TextField keyEntry = new TextField(20);
+        keyEntry.setText(HospiSysAdmin.generateSystemKey());
+        keyEntry.setEditable(false);
         keyPanel.add(keyEntry);
+
+        // Regenerate key button
+        JButton regenButton = new JButton("Regenerate");
+        regenButton.addActionListener(e -> keyEntry.setText(HospiSysAdmin.generateSystemKey()));
+        keyPanel.add(regenButton);
+
 
         // Save button
         JButton saveButton = new JButton("Save");
+        saveButton.setFont(HospiSys.font);
         saveButton.addActionListener(e -> {
             try {
                 frame.dispose();
@@ -54,7 +65,6 @@ public class HospiSysSetup {
                 throw new RuntimeException(ex);
             }
         });
-        keyPanel.add(saveButton);
 
 
         // add title
@@ -67,10 +77,18 @@ public class HospiSysSetup {
         gbc.gridy = 1;
         frame.getContentPane().add(info, gbc);
 
-        // add key panel
+        // add regen info
         gbc.gridy = 2;
+        frame.getContentPane().add(regenInfo, gbc);
+
+        // add key panel
+        gbc.gridy = 3;
         frame.getContentPane().add(keyPanel, gbc);
 
+        // add save button
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.CENTER;
+        frame.getContentPane().add(saveButton, gbc);
 
         frame.setVisible(true);
     }
@@ -188,16 +206,14 @@ public class HospiSysSetup {
 
     // Create folders function
     private static void createFolders(String path) throws IOException {
-        // Path folderPath = Path.of(path + "/HospiSys");
-
         Path datPath = Path.of(path + "/dat");
         Path imgPath = Path.of(path + "/img");
 
 
         if(Files.exists(datPath)) {
-            String messageExtra = "";
+            String messageExtra = "Incomplete";
             if(Files.exists(imgPath)) {
-                messageExtra += "Incomplete ";
+                messageExtra = "";
             }
 
             // pop up gives the user option to delete existing installation

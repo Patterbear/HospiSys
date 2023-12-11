@@ -67,8 +67,8 @@ public class HospiSysData {
     }
 
     // Check if string contains only letters function
-    // used to determine if encrypt is needed
-    private static boolean isOnlyLetters(String s) {
+    // used to determine if encrypt is needed or system key contains non-letters
+    public static boolean isOnlyLetters(String s) {
         for (int i = 0; i < s.length(); i++) {
             if(!Character.isLetter(s.charAt(i))) {
                 return false;
@@ -191,17 +191,6 @@ public class HospiSysData {
 
     }
 
-    public String readAll() throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
-        String readout = "";
-
-        while (scanner.hasNextLine()) {
-            readout += scanner.nextLine() + "\n";
-        }
-
-        return readout;
-    }
-
     private String[] formatRecord(String record) {
         return record.split("-");
     }
@@ -222,6 +211,7 @@ public class HospiSysData {
 
         return formatRecord(record);
     }
+
 
     // Record search function
     // returns a list of records matching the given search parameters
@@ -311,10 +301,6 @@ public class HospiSysData {
         String usernameHash = Playfair.encrypt(username, password).replace("\\", "");
         String passwordHash = Playfair.encrypt(password, password).replace("\\", "");
         String[] user = readUser(usernameHash);
-
-        System.out.println("usernameHash: " + usernameHash);
-        System.out.println("passwordHash: " + passwordHash);
-        System.out.println(Arrays.toString(user));
 
         if(usernameHash.equals(user[0]) && passwordHash.equals(user[1])) {
             return true;

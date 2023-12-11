@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Random;
 import java.util.Scanner;
 
 public class HospiSysAdmin {
@@ -80,9 +81,16 @@ public class HospiSysAdmin {
             }
         });
 
+        JButton setupButton = new JButton("Reinstall System");
+        setupButton.addActionListener(e -> {
+            frame.dispose();
+            HospiSysSetup.start();
+        });
+
         buttonsPanel.add(newUserButton);
         buttonsPanel.add(staffInterfaceButton);
         buttonsPanel.add(systemKeyButton);
+        buttonsPanel.add(setupButton);
 
         JButton logoutButton = new JButton("Log Out");
         logoutButton.addActionListener(e -> {
@@ -285,19 +293,43 @@ public class HospiSysAdmin {
 
     }
 
+    // System Key generation function
+    // generates a random system key
+    // used for initial setup and key regeneration
+    public static String generateSystemKey() {
+        char[] letters = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        String key = "";
+
+        for (int i = 0; i < 26; i++) {
+            Random r = new Random(); // new 'Random' object initialised with each iteration for extra randomness
+            key += letters[r.nextInt(26)];
+        }
+
+        return key;
+    }
+
     // Screen for system key changing
     // allows user to change system key
     private static void editSystemKey(JFrame parent, String username, String password) {
-        JFrame frame = HospiSys.buildScreen("Edit System Key", 450, 75, false);
+        JFrame frame = HospiSys.buildScreen("Edit System Key", 500, 140, false);
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         frame.setResizable(false);
 
         JPanel keyPanel = new JPanel();
-        keyPanel.add(new JLabel("New System Key"));
+        keyPanel.add(new JLabel("New System Key:"));
 
         TextField keyEntry = new TextField(20);
+        keyEntry.setText(generateSystemKey());
+        keyEntry.setEditable(false);
         keyPanel.add(keyEntry);
 
+        JButton regenButton = new JButton("Regenerate");
+        regenButton.addActionListener(e -> keyEntry.setText(generateSystemKey()));
+        keyPanel.add(regenButton);
+
         JButton saveButton = new JButton("Save");
+        saveButton.setFont(HospiSys.font);
         saveButton.addActionListener(e -> {
             try {
                 setSystemKey(keyEntry.getText(), username, password);
@@ -308,10 +340,16 @@ public class HospiSysAdmin {
                 throw new RuntimeException(ex);
             }
         });
-        keyPanel.add(saveButton);
 
-        frame.getContentPane().add(keyPanel);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        frame.getContentPane().add(keyPanel, gbc);
 
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        frame.getContentPane().add(saveButton, gbc);
 
         frame.setVisible(true);
     }
@@ -339,7 +377,7 @@ public class HospiSysAdmin {
         JButton back = new JButton("Back");
         back.addActionListener(e -> frame.dispose());
 
-        JButton edit = new JButton("Edit");
+        JButton edit = new JButton("Regenerate");
         edit.addActionListener(e -> editSystemKey(frame, username, password));
 
         JButton view = new JButton("View");

@@ -43,7 +43,7 @@ public class HospiSys {
     // creates the initial login screen
     public static void start() throws IOException {
         // login window JFrame initialisation and configurations
-        JFrame frame = buildScreen("Login", 700, 350, true);
+        JFrame frame = buildScreen("Login", 700, 375, true);
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
