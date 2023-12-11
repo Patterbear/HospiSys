@@ -140,10 +140,6 @@ public class HospiSys {
         gbc.gridwidth = 2;
         frame.getContentPane().add(bottomButtonsPanel, gbc);
 
-        // temporary
-        usernameEntry.setText("a");
-        passwordEntry.setText("a");
-
         frame.setVisible(true);
 
     }
