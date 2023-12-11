@@ -16,29 +16,29 @@ public class HospiSysSetup {
 
 
     // Setup System Key screen
-    private static void setupSystemKey(String path) {
-        JFrame frame = HospiSys.buildScreen("Create System Key", 700, 500, false);
+    public static void setupSystemKey(String path) {
+        JFrame frame = HospiSys.buildScreen("Create System Key", 725, 150, false);
         frame.setResizable(false);
-        frame.setLayout(new GridLayout(0,1));
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        // Text panel
-        JPanel textPanel = new JPanel(new GridLayout(0, 1));
-
+        // Screen title label
         JLabel title = new JLabel("Please create a system key");
         title.setFont(HospiSys.font);
 
+        // Information label
         JLabel info = new JLabel("Please make a secure physical copy of this key." +
-                "If the key file is deleted or tampered with, the data will not decrypt.");
-
-        textPanel.add(title);
-        textPanel.add(info);
+                " If the key file is deleted or tampered with, the data will not decrypt.");
 
 
+        // Key section
         JPanel keyPanel = new JPanel();
 
+        // Key entry
         TextField keyEntry = new TextField(20);
         keyPanel.add(keyEntry);
 
+        // Save button
         JButton saveButton = new JButton("Save");
         saveButton.addActionListener(e -> {
             try {
@@ -57,8 +57,19 @@ public class HospiSysSetup {
         keyPanel.add(saveButton);
 
 
-        frame.getContentPane().add(textPanel);
-        frame.getContentPane().add(keyPanel);
+        // add title
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        frame.getContentPane().add(title, gbc);
+
+        // add text
+        gbc.gridy = 1;
+        frame.getContentPane().add(info, gbc);
+
+        // add key panel
+        gbc.gridy = 2;
+        frame.getContentPane().add(keyPanel, gbc);
 
 
         frame.setVisible(true);
