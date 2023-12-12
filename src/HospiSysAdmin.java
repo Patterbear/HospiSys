@@ -282,7 +282,10 @@ public class HospiSysAdmin {
     private static String getSystemKey() throws FileNotFoundException {
         Scanner s = new Scanner(new File("dat/syskey.txt"));
 
-        return s.nextLine();
+        String key = s.nextLine();
+        s.close();
+
+        return key;
     }
 
     // Set system key method

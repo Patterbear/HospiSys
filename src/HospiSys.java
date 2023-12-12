@@ -235,6 +235,8 @@ public class HospiSys {
 
     // Search patients screen
     // allows user to view records matching selected criteria
+    // TODO: remove button clicking after deletion/alteration
+    // TODO: remove something simple that ive forgotten
     private static void search(String username, String password) throws IOException {
         // JFrame setup;
         JFrame frame = buildScreen("Search", 700, 400, false);
@@ -304,7 +306,6 @@ public class HospiSys {
 
         // by default shows all records
         searchButton.doClick();
-        searchBar.setText("");
 
         frame.setVisible(true);
 

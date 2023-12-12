@@ -249,6 +249,8 @@ public class HospiSysSetup {
         for (int i = 1; i < 4; i++) {
             Files.copy(Paths.get("demo/" + i + ".png"), Paths.get("img/" + i + ".png"), StandardCopyOption.REPLACE_EXISTING);
         }
+
+        s.close();
     }
 
     // Create folders function
