@@ -216,10 +216,10 @@ public class HospiSysAdmin {
 
                         frame.dispose();
                     } else {
-                        JOptionPane.showMessageDialog(null, "Passwords must be at least 8 characters long.");
+                        JOptionPane.showMessageDialog(null, "Passwords must be at least 8 characters long and contain at least 1 number or symbol.");
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Username must be at least 4 characters long.");
+                    JOptionPane.showMessageDialog(null, "Username must be at least 4 characters long and contain at least 1 number or symbol.");
 
                 }
 

@@ -32,20 +32,18 @@ public class HospiSysData {
 
 
     // Check username validity function
-    // used to ensure usernames meet the criteria (no non-letters, more than 3 characters)
-    // TODO: Allow numbers and symbols
+    // used to ensure usernames meet the criteria (not just letters, more than 3 characters)
     public static boolean usernameSuitable(String username) {
-        if(isOnlyLetters(username) && username.length() > 3) {
+        if(!isOnlyLetters(username) && username.length() > 3) {
             return true;
         }
         return false;
     }
 
     // Check username validity function
-    // used to ensure password meet the criteria (no non-letters, more than 7 characters)
-    // TODO: Allow numbers and symbols
+    // used to ensure password meet the criteria (not just letters, more than 7 characters)
     public static boolean passwordSuitable(String password) {
-        if(isOnlyLetters(password) && password.length() > 7) {
+        if(!isOnlyLetters(password) && password.length() > 7) {
             return true;
         }
         return false;
@@ -271,6 +269,8 @@ public class HospiSysData {
             }
         }
 
+        scanner.close();
+
         // convert list into 2D string array
         String[][] results = new String[resultList.size()][];
         for (int i = 0; i < resultList.size(); i++) {
@@ -332,6 +332,7 @@ public class HospiSysData {
     // Write user function
     // encrypts and adds username and password to file
     public void writeUser(String username, String password) throws IOException {
+
         String hash = Playfair.encrypt(username, password) + "-" + Playfair.encrypt(password, password) + "\n";
         write(hash);
         JOptionPane.showMessageDialog(null, "User created successfully.");
