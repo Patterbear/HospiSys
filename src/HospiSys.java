@@ -18,7 +18,7 @@ import java.util.Arrays;
 // Main class
 public class HospiSys {
 
-    public static ImageIcon logoImage = new ImageIcon(new ImageIcon("img/logo.png").getImage().getScaledInstance(200, 150, Image.SCALE_FAST));
+    public static ImageIcon logoImage = new ImageIcon(new ImageIcon("bin/logo.png").getImage().getScaledInstance(200, 150, Image.SCALE_FAST));
 
     public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);
 

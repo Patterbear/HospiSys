@@ -17,6 +17,10 @@ import java.util.Scanner;
 // System setup class
 public class HospiSysSetup {
 
+    // Copy default patient profile image from bin to img folder
+    private static void copyDefaultProfilePhoto() throws IOException {
+        Files.copy(Paths.get("bin/0.png"), Paths.get("img/0.png"), StandardCopyOption.REPLACE_EXISTING);
+    }
 
     // Setup System Key screen
     public static void setupSystemKey(String path) {
@@ -279,6 +283,11 @@ public class HospiSysSetup {
 
         new File(path + "/dat").mkdirs();
         new File(path + "/img").mkdirs();
+
+        // copy default profile image
+        copyDefaultProfilePhoto();
+
+        // create data files
         createHSDs(path);
     }
 
@@ -288,7 +297,7 @@ public class HospiSysSetup {
 
         // delete patient images
         int recordCount = new HospiSysData("dat/patients.hsd").nextId();
-        for(int i = 1; i < recordCount; i++) {
+        for(int i = 0; i < recordCount; i++) {
             Files.deleteIfExists(Path.of(folderPath + "/img/" + Integer.toString(i) + ".png"));
         }
 
@@ -397,7 +406,7 @@ public class HospiSysSetup {
 
     // Start method
     // opens setup initialisation screen
-    public static void start() {
+    public static void start() throws IOException {
 
         // JFrame initialisation and configurations
         JFrame frame = HospiSys.buildScreen("Setup", 450, 200, true);

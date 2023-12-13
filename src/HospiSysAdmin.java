@@ -84,7 +84,11 @@ public class HospiSysAdmin {
         JButton setupButton = new JButton("Reinstall System");
         setupButton.addActionListener(e -> {
             frame.dispose();
-            HospiSysSetup.start();
+            try {
+                HospiSysSetup.start();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         buttonsPanel.add(newUserButton);
