@@ -4,7 +4,7 @@ A patient record system written in Java that makes use of the 'swing' GUI framew
 This encryption method is outdated and was only implemented as a programming challenge.
 
 ## Install and Run (from GitHub)
-To install from this GitHub repo, simply open the command prompt in your desired direvtory and run the following command:
+To install from this GitHub repo, simply open the command prompt in your desired directory and run the following command:
 
 ```git clone https://github.com/Patterbear/HospiSys.git```
 
