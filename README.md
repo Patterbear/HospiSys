@@ -11,6 +11,6 @@ To install from this GitHub repo, simply open the command prompt in your desired
 To run the application, double-click the 'run.bat' (Windows) or 'run.sh' (Mac and Linux) files in the new directory.
 
 ## Install and Run (Commercial)
-For the 'commercial' release of this application, a '.zip' archive containing a 'click-to-run' .jar executable, demo files and the 'bin' folder.
+For the 'commercial' release of this application, a '.zip' archive containing a 'click-to-run' .jar executable, demo files and the 'bin' folder. The latest version of this can be downloaded from https://drive.google.com/file/d/1RxWn_Csltu2E4HY9fBqtig6kxL24fllc
 
-To install the application the user need only unzip the archive in the desired folder, before double-clicking the 'HospiSys.jar' executable to run the program.
+To install the application the user need only unzip the archive in the desired folder, before double-clicking the 'HospiSys.jar' executable to run the program. The 'readme.txt' file included in the archive describes the installation process.
