@@ -214,6 +214,10 @@ public class HospiSysData {
         return record.split("-");
     }
 
+    
+    // Retrieve record function
+    // returns a formatted record with matching ID number
+    // COMMENT: fixed to allow > 2-digit numbers
     public String[] retrieve(int id) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
         String record = "";
@@ -222,7 +226,7 @@ public class HospiSysData {
 
             record = scanner.nextLine();
 
-            if (record.substring(0, 1).equals(Integer.toString(id))) {
+            if (record.split("-")[0].equals(Integer.toString(id))) {
                 break;
             }
         }
