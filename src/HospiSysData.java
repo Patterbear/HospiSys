@@ -214,7 +214,6 @@ public class HospiSysData {
         return record.split("-");
     }
 
-    
     // Retrieve record function
     // returns a formatted record with matching ID number
     // COMMENT: fixed to allow > 2-digit numbers

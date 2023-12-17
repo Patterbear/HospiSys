@@ -50,7 +50,13 @@ public class HospiSysAdmin {
         JPanel systemStatusPanel = new JPanel();
         systemStatusPanel.add(new JLabel("System status: Online"));
 
-        JPanel buttonsPanel = new JPanel();
+        // Panel for buttons related to users
+        JPanel usersPanel = new JPanel();
+        usersPanel.add(new JLabel("Users"));
+
+        // Panel for system buttons
+        JPanel systemPanel = new JPanel();
+        systemPanel.add(new JLabel("System"));
 
         // new user button
         JButton newUserButton = new JButton("Create New User");
@@ -61,6 +67,10 @@ public class HospiSysAdmin {
                 throw new RuntimeException(ex);
             }
         });
+
+        // edit/delete user button
+        JButton editDeleteUserButton = new JButton("Edit/Delete User");
+        editDeleteUserButton.setEnabled(false);
 
         JButton staffInterfaceButton = new JButton("Staff Interface");
         staffInterfaceButton.addActionListener(e -> {
@@ -91,10 +101,11 @@ public class HospiSysAdmin {
             }
         });
 
-        buttonsPanel.add(newUserButton);
-        buttonsPanel.add(staffInterfaceButton);
-        buttonsPanel.add(systemKeyButton);
-        buttonsPanel.add(setupButton);
+        usersPanel.add(newUserButton);
+        usersPanel.add(editDeleteUserButton);
+        usersPanel.add(staffInterfaceButton);
+        systemPanel.add(systemKeyButton);
+        systemPanel.add(setupButton);
 
         JButton logoutButton = new JButton("Log Out");
         logoutButton.addActionListener(e -> {
@@ -107,7 +118,8 @@ public class HospiSysAdmin {
         });
 
         frame.getContentPane().add(systemStatusPanel);
-        frame.getContentPane().add(buttonsPanel);
+        frame.getContentPane().add(usersPanel);
+        frame.getContentPane().add(systemPanel);
         frame.getContentPane().add(logoutButton);
 
 
