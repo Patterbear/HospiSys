@@ -22,13 +22,27 @@ public class HospiSys {
 
     public static Font font = new Font(Font.DIALOG, Font.BOLD, 24);
 
+
+    // Centre frame function
+    // sets frame position to centre of screen
+    private static void centreFrame(Window frame) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((screenSize.getWidth() - frame.getWidth()) / 2);
+        int y = (int) ((screenSize.getHeight() - frame.getHeight()) / 2);
+
+        frame.setLocation(x, y);
+    }
+
     // Build screen function
     // creates a JFrame with some standard configurations
     public static JFrame buildScreen(String title, int width, int height, boolean exit) {
         JFrame frame = new JFrame("HospiSys - " + title);
         frame.setSize(width, height);
         frame.setIconImage(logoImage.getImage());
-        //frame.setResizable(false);
+
+        // set window location to centre of screen
+        centreFrame(frame);
+
         if(exit) {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         } else {
