@@ -63,7 +63,7 @@ public class HospiSysSetup {
                 frame.dispose();
 
                 // Write new key to file
-                PrintWriter pw = new PrintWriter("dat/syskey.txt");
+                PrintWriter pw = new PrintWriter("dat/syskey");
                 pw.println(keyEntry.getText());
                 pw.close();
 

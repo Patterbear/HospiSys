@@ -296,7 +296,7 @@ public class HospiSysAdmin {
     // retrieves key from file
     // COMMENT: If this system was commercially deployed, this file would be stored securely on the admin server
     private static String getSystemKey() throws FileNotFoundException {
-        Scanner s = new Scanner(new File("dat/syskey.txt"));
+        Scanner s = new Scanner(new File("dat/syskey"));
 
         String key = s.nextLine();
         s.close();
@@ -312,7 +312,7 @@ public class HospiSysAdmin {
         String[][] decryptedData = HospiSysData.decryptPatientData(username, password);
 
         // Write new key to file
-        PrintWriter pw = new PrintWriter("dat/syskey.txt");
+        PrintWriter pw = new PrintWriter("dat/syskey");
         pw.println(newKey);
         pw.close();
 
